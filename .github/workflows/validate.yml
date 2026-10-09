@@ -1,0 +1,53 @@
+name: Validate plugins
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Каждый manifest в дереве должен проходить валидатор. Это ловит
+      # опечатки в category/iconName/motif и сломанный JSON до того, как
+      # их увидит пользователь.
+      - name: Validate every plugin manifest
+        run: python3 tools/validate.py examples/
+
+      # Собираем декларативные примеры в .amaliaplug и валидируем уже пакет:
+      # проверяется, что plugin.json лежит в корне архива.
+      #
+      # Примеры с кодом пропускаем: в CI нет Android-тулчейна, чтобы собрать
+      # classes.dex, а пакет без dex валидатор справедливо считает сломанным.
+      # Их исходники проверяются на этапе манифеста выше.
+      - name: Package and validate declarative examples
+        run: |
+          set -euo pipefail
+          packaged=0
+          for dir in examples/*/; do
+            manifest="$dir/plugin.json"
+            [[ -f "$manifest" ]] || continue
+            if python3 -c "import json,sys;sys.exit(0 if json.load(open(sys.argv[1])).get('entryPoint') else 1)" "$manifest"; then
+              echo "skip (needs classes.dex): $dir"
+              continue
+            fi
+            echo "::group::$dir"
+            tools/pack.sh "$dir" dist/
+            echo "::endgroup::"
+            packaged=$((packaged + 1))
+          done
+          echo "packaged: $packaged"
+          if [[ "$packaged" -eq 0 ]]; then
+            echo "нечего проверять — похоже, примеры не найдены" >&2
+            exit 1
+          fi
+          python3 tools/validate.py dist/
+
+      - name: Show artifacts
+        run: ls -la dist/

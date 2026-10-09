@@ -1,0 +1,11 @@
+{
+  "id": "com.example.reminder",
+  "name": "Voice Reminders",
+  "version": "1.0.0",
+  "author": "example",
+  "category": "general",
+  "description": "Голосовые напоминания: «напомни через 20 минут выключить чай»",
+  "iconName": "alert",
+  "minHostVersion": "2.0.0",
+  "entryPoint": "com.example.amalia.reminder.ReminderPlugin"
+}

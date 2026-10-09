@@ -1,0 +1,12 @@
+# Собранные пакеты: их производит tools/pack.sh и они не должны попадать в git.
+dist/
+
+# Editor / OS
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc

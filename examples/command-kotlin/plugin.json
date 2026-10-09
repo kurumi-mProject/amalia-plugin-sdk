@@ -1,0 +1,11 @@
+{
+  "id": "com.example.quicknotes",
+  "name": "Quick Notes",
+  "version": "1.0.0",
+  "author": "example",
+  "category": "command",
+  "description": "Заметка голосом: «запиши мысль …» — без обращения к модели",
+  "iconName": "copy",
+  "minHostVersion": "2.0.0",
+  "entryPoint": "com.example.amalia.quicknotes.QuickNotesPlugin"
+}

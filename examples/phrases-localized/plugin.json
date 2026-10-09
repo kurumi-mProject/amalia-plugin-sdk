@@ -1,0 +1,23 @@
+{
+  "id": "com.mirabel.phrases.pack",
+  "name": "Phrase Pack",
+  "version": "1.0.0",
+  "author": "mirabel",
+  "category": "phrases",
+  "description": "Дополнительные приветствия на девяти языках Амалии",
+  "iconName": "wave",
+  "minHostVersion": "2.0.0",
+  "entryPoint": null,
+  "themes": [],
+  "phrases": {
+    "ru": ["Неон зажёгся. Слушаю.", "Ночь молодая, я тоже."],
+    "en": ["Neon is on. I'm listening.", "The night is young — so am I."],
+    "ja": ["ネオン点灯。聞いてるよ。"],
+    "de": ["Neon ist an. Ich höre."],
+    "es": ["Neón encendido. Escucho."],
+    "fr": ["Néon allumé. J'écoute."],
+    "zh": ["霓虹亮了，我在听。"],
+    "hi": ["नियॉन चालू है। सुन रही हूँ।"],
+    "ar": ["النيون مضاء. أسمعك."]
+  }
+}

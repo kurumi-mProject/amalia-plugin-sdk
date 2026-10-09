@@ -1,0 +1,11 @@
+{
+  "id": "com.example.pomodoro",
+  "name": "Pomodoro",
+  "version": "1.0.0",
+  "author": "example",
+  "category": "general",
+  "description": "Таймер 25/5 с кнопками прямо в уведомлении",
+  "iconName": "history",
+  "minHostVersion": "2.0.0",
+  "entryPoint": "com.example.amalia.pomodoro.PomodoroPlugin"
+}

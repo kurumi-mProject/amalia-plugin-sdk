@@ -1,0 +1,11 @@
+{
+  "id": "com.example.units",
+  "name": "Unit Converter",
+  "version": "1.0.0",
+  "author": "example",
+  "category": "tools",
+  "description": "Точный перевод единиц: км/мили, кг/фунты, °C/°F",
+  "iconName": "tools",
+  "minHostVersion": "2.0.0",
+  "entryPoint": "com.example.amalia.counter.UnitsPlugin"
+}
