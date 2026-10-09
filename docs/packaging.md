@@ -109,7 +109,70 @@ your plugin is skipped, not fatal.
 
 ---
 
-## 5. Versioning and updates
+## 5. Building it in CI (no local toolchain)
+
+You do not need an Android project to build a plugin. The whole pipeline is:
+compile Kotlin against `android.jar` → `d8` → zip. That is what
+[`.github/workflows/build-plugin.yml`](../.github/workflows/build-plugin.yml)
+does, and you can copy it into your own repository.
+
+The example is set up as a real Gradle project:
+
+```
+examples/reminder-kotlin/
+├── settings.gradle.kts        include(":contracts", ":plugin")
+├── build.gradle.kts           locates android.jar from ANDROID_HOME
+├── contracts/                 host contracts — compileOnly, never shipped
+└── plugin/                    your sources → plugin.jar
+```
+
+The essential trick is the split:
+
+```kotlin
+// :plugin — contracts are compile-only
+dependencies {
+    compileOnly(project(":contracts"))
+    compileOnly(files(androidJar))
+}
+```
+
+If the contracts end up in your jar, they end up in `classes.dex`, and at load
+time the host's own copies win while yours cause duplicate-class errors. The
+workflow checks for exactly that:
+
+```bash
+python3 tools/check-dex.py build/classes.dex     # fails if Lcom/my/amali/plugin/ is present
+```
+
+Minimal CI steps for your own repo:
+
+```yaml
+- uses: actions/setup-java@v4
+  with: { distribution: temurin, java-version: "17" }
+- uses: gradle/actions/setup-gradle@v4
+  with: { gradle-version: "8.10.2" }
+
+- run: |
+    D8="$ANDROID_HOME/build-tools/34.0.0/d8"
+    gradle --no-daemon :plugin:jar
+    "$D8" --min-api 26 \
+      --lib "$ANDROID_HOME/platforms/android-34/android.jar" \
+      --output dex/ plugin/build/libs/plugin.jar
+    zip -j my-plugin.amaliaplug plugin.json dex/classes.dex
+```
+
+Requirements, in one line: **JDK 17**, **Android SDK with `platforms;android-34`
+and `build-tools;34.0.0`** (GitHub-hosted runners already have both), and
+**Gradle 8.x**.
+
+The workflow in this repository publishes the finished `.amaliaplug` as a build
+artifact and, when run manually with `publish_release`, attaches it to a
+`plugins-latest` release — so the file has a stable download link you can hand
+to a tester.
+
+---
+
+## 6. Versioning and updates
 
 - Bump `version` on every release. The store compares it against the installed
   copy and offers **Update** when the catalog version is higher.

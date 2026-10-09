@@ -142,6 +142,18 @@ Full guide: **[docs/quickstart.md](docs/quickstart.md)**.
 
 ---
 
+## Get a ready-to-install plugin package
+
+You do not have to build anything to try this. The *Build plugin package*
+workflow compiles a code example and publishes the finished `.amaliaplug`:
+
+1. **Actions → Build plugin package → Run workflow** (default example:
+   `reminder-kotlin`).
+2. Download the artifact — or grab it from the **`plugins-latest`** release.
+3. In Amalia: **Settings → Plugins → Install from file**.
+
+---
+
 ## Language support
 
 Amalia ships in nine locales: Russian (default), English, Japanese, German,

@@ -10,6 +10,17 @@ the Amalia host app:
 | `PluginCategory.kt` | `PluginCategory` enum |
 | `ExtensionPoints.kt` | every contribution interface and its data types |
 
+And a trimmed set for plugins that need **no UI**:
+
+| File | Contains |
+|---|---|
+| `minimal/` | `AmaliaPlugin`, `PluginMetadata`, `PluginCategory`, plus commands, notifications, background and capabilities — without Compose |
+
+`minimal/Contributions.kt` is generated verbatim from `ExtensionPoints.kt` by
+`tools/extract-minimal-contracts.py`, so it cannot drift by hand. Use it when
+your plugin has no screens or widgets: it compiles with nothing but `android.jar`
+and the Kotlin stdlib, which means CI does not need an Android toolchain.
+
 ## Why copies, and not a dependency
 
 There is **no published Gradle artifact yet** — the contracts currently live

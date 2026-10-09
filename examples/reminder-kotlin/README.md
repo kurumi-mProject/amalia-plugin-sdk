@@ -65,18 +65,32 @@ That means:
 
 ## Build
 
+The example is a self-contained Gradle project — contracts come from
+`sdk/api/minimal` (no Compose, no Android plugin):
+
 ```bash
-# 1. compile to a jar
-./gradlew jar
+# 1. compile (needs JDK 17 + Android SDK with platforms;android-34)
+gradle -p examples/reminder-kotlin :plugin:jar
 
 # 2. jar → dex
 $ANDROID_HOME/build-tools/34.0.0/d8 \
-    --min-api 26 --output out/ build/libs/reminder.jar
-cp out/classes.dex .
+    --min-api 26 \
+    --lib "$ANDROID_HOME/platforms/android-34/android.jar" \
+    --output examples/reminder-kotlin/dex \
+    examples/reminder-kotlin/plugin/build/libs/plugin.jar
 
-# 3. validate and package (from the SDK root)
-../../tools/pack.sh .
+# 3. check that host contracts did not leak into the dex
+python3 tools/check-dex.py examples/reminder-kotlin/dex/classes.dex
+
+# 4. package + validate
+cp examples/reminder-kotlin/dex/classes.dex examples/reminder-kotlin/
+tools/pack.sh examples/reminder-kotlin
 ```
+
+**Or let GitHub build it.** Run the *Build plugin package* workflow
+(`workflow_dispatch`) — it produces `Reminder.amaliaplug` as a downloadable
+artifact and attaches it to the `plugins-latest` release. Nothing to install
+locally.
 
 ## Install and try
 
