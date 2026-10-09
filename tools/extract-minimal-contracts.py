@@ -91,14 +91,36 @@ def main(argv: list[str]) -> int:
             if k >= 0:
                 kdoc = k
 
-        # Конец объявления — по балансу фигурных скобок
-        depth = 0
-        opened = False
+        # Конец объявления.
+        #
+        # Нельзя просто считать фигурные скобки: у `data class X(...)` без
+        # тела их нет вовсе, и счётчик «доедет» до тела СЛЕДУЮЩЕГО объявления,
+        # утащив его за собой (именно так в файле появились дубликаты).
+        # Поэтому различаем два случая: объявление с телом (ждём баланс скобок)
+        # и объявление только с параметрами (ждём закрывающую круглую).
+        paren = 0
+        brace = 0
+        body_started = False
+        paren_seen = False
         end = None
         for i in range(start, len(lines)):
-            depth += lines[i].count("{") - lines[i].count("}")
-            opened = opened or "{" in lines[i]
-            if opened and depth == 0:
+            for ch in lines[i]:
+                if ch == "(":
+                    paren += 1
+                    paren_seen = True
+                elif ch == ")":
+                    paren -= 1
+                elif ch == "{":
+                    if paren <= 0:
+                        body_started = True
+                    brace += 1
+                elif ch == "}":
+                    brace -= 1
+            if body_started:
+                if brace == 0:
+                    end = i
+                    break
+            elif paren_seen and paren == 0:
                 end = i
                 break
         if end is None:
