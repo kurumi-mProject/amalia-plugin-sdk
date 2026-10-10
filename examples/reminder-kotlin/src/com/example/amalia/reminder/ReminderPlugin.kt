@@ -111,7 +111,7 @@ class ReminderPlugin :
 
         // Список и очистка — простые точные фразы.
         if (lower in LIST_PHRASES) {
-            val all = storeOf(context).all()
+            val all = storeOf(context.appContext).all()
             val nearest = all.firstOrNull()
             val remaining = nearest?.let {
                 texts.remainingIn(it.dueAtMillis - System.currentTimeMillis())
@@ -121,7 +121,7 @@ class ReminderPlugin :
             )
         }
         if (lower in CLEAR_PHRASES) {
-            val removed = storeOf(context).clear()
+            val removed = storeOf(context.appContext).clear()
             return CommandResult.Handled(
                 spoken = if (removed == 0) texts.listNearest(0, null, null) else texts.cleared(removed),
             )
@@ -139,7 +139,7 @@ class ReminderPlugin :
                 CommandResult.Handled(spoken = texts.noTime)
 
             is ReminderParser.ParseOutcome.Ok -> {
-                val reminder = storeOf(context).add(
+                val reminder = storeOf(context.appContext).add(
                     dueAtMillis = outcome.dueAtMillis,
                     text = outcome.text.ifBlank { texts.defaultText },
                 )
