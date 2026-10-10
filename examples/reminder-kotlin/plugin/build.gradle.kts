@@ -24,8 +24,10 @@ dependencies {
 }
 
 // Имя артефакта фиксируем: workflow не должен угадывать версию проекта.
+// Явно исключаем классы хоста — на случай если Gradle всё же включит их.
 tasks.named<Jar>("jar") {
     archiveBaseName.set("plugin")
     archiveVersion.set("")
     archiveClassifier.set("")
+    exclude("com/my/amali/**")
 }

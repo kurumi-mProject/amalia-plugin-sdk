@@ -89,6 +89,15 @@ jobs:
       - name: Compile plugin to jar
         run: gradle --no-daemon -p "examples/$EXAMPLE" :plugin:jar
 
+      - name: Strip host contracts from jar
+        run: |
+          set -euo pipefail
+          JAR="examples/$EXAMPLE/plugin/build/libs/plugin.jar"
+          # Удаляем классы хоста на случай если они попали в jar (transitive deps).
+          zip -d "$JAR" 'com/my/amali/**' 2>/dev/null || true
+          echo "jar после strip:"
+          unzip -l "$JAR" | grep "com/my" || echo "  (классов хоста нет — ok)"
+
       - name: Convert jar to classes.dex
         run: |
           set -euo pipefail
