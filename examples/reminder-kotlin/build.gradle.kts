@@ -9,7 +9,7 @@
 // попасть в jar плагина. Иначе в dex уехали бы копии классов хоста, и
 // загрузка плагина упала бы на конфликте классов.
 plugins {
-    kotlin("jvm") version "2.0.21" apply false
+    kotlin("jvm") version "1.9.25" apply false
 }
 
 // android.jar берём из Android SDK (ANDROID_HOME). Это стабы платформы:
