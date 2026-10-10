@@ -18,6 +18,9 @@ dependencies {
     compileOnly(project(":contracts"))
     // android.content.Context, android.R.drawable.* — стабы платформы.
     compileOnly(files(androidJar))
+    // Корутины — используются в ReminderStore (withContext/Dispatchers).
+    // Kotlin stdlib хост уже несёт, а coroutines-core нужно включить в dex.
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 }
 
 // Имя артефакта фиксируем: workflow не должен угадывать версию проекта.
