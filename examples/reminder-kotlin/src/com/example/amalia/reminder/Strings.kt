@@ -5,30 +5,26 @@ import android.content.Context
 /**
  * Тексты плагина — свои, в коде.
  *
- * ════════════════════════════════════════════════════════════════════
- *  ПОЧЕМУ НЕ strings.xml
- * ════════════════════════════════════════════════════════════════════
- *
- * `.amaliaplug` **не может принести в приложение свои ресурсы**: они не
- * вливаются при установке, поэтому своего `R` у плагина нет. Значит, любой
- * свой текст плагин локализует сам — таблицей по тегу языка, как здесь.
- *
- * Язык берём из `Configuration` актуального контекста, а не из настроек
- * приложения: так текст совпадёт с тем, что видит пользователь.
+ * `.amaliaplug` не может принести свои ресурсы, поэтому локализуем сами
+ * по тегу языка из конфигурации контекста.
  */
 internal object Strings {
 
     /** Тексты одного языка. */
-    open class Texts(
-        val defaultText: String,
-        val scheduled: (String) -> String,
-        val noTime: String,
-        val due: (String) -> String,
-        val done: String,
-        val snooze: String,
-        val cleared: (Int) -> String,
-        val listNearest: (count: Int, nearest: String?, remaining: String?) -> String,
-    ) {
+    abstract class Texts {
+        abstract val defaultText: String
+        abstract val noTime: String
+        abstract val done: String
+        abstract val snooze: String
+
+        abstract fun scheduled(at: String): String
+        abstract fun due(text: String): String
+        abstract fun cleared(count: Int): String
+        abstract fun listNearest(count: Int, nearest: String?, remaining: String?): String
+
+        open val minuteSuffix: String get() = "min"
+        open val hourSuffix: String get() = "h"
+
         /** «17 мин», «1 ч 5 мин» — человеческий остаток времени. */
         fun remainingIn(millisLeft: Long): String {
             val totalMinutes = (millisLeft / 60_000L).coerceAtLeast(0)
@@ -40,49 +36,43 @@ internal object Strings {
                 else -> "$minutes$minuteSuffix"
             }
         }
-
-        open val minuteSuffix: String get() = "min"
-        open val hourSuffix: String get() = "h"
     }
 
-    private val RU = object : Texts(
-        defaultText = "Напоминание",
-        scheduled = { at -> "Запомнила. Напомню в $at." },
-        noTime = "Не поняла время. Скажи, например: «напомни через 10 минут выключить чай».",
-        due = { text -> "пора: $text" },
-        done = "Готово",
-        snooze = "Отложить",
-        cleared = { count -> "Убрала напоминаний: $count." },
-        listNearest = { count, nearest, remaining ->
-            when {
-                count == 0 -> "Напоминаний нет."
-                nearest == null -> "Напоминаний: $count."
-                else -> "Напоминаний: $count. Ближайшее: $nearest, " +
-                    (remaining?.let { "осталось $it" } ?: "уже пора")
-            }
-        },
-    ) {
-        override val minuteSuffix: String get() = " мин"
-        override val hourSuffix: String get() = " ч"
+    private val RU = object : Texts() {
+        override val defaultText = "Напоминание"
+        override val noTime = "Не поняла время. Скажи, например: «напомни через 10 минут выключить чай»."
+        override val done = "Готово"
+        override val snooze = "Отложить"
+        override val minuteSuffix = " мин"
+        override val hourSuffix = " ч"
+
+        override fun scheduled(at: String) = "Запомнила. Напомню в $at."
+        override fun due(text: String) = "пора: $text"
+        override fun cleared(count: Int) = "Убрала напоминаний: $count."
+        override fun listNearest(count: Int, nearest: String?, remaining: String?) = when {
+            count == 0 -> "Напоминаний нет."
+            nearest == null -> "Напоминаний: $count."
+            else -> "Напоминаний: $count. Ближайшее: $nearest, " +
+                (remaining?.let { "осталось $it" } ?: "уже пора")
+        }
     }
 
-    private val EN = object : Texts(
-        defaultText = "Reminder",
-        scheduled = { at -> "Noted. I'll remind you at $at." },
-        noTime = "I didn't catch the time. Try: \"remind me in 10 minutes to take the tea off\".",
-        due = { text -> "time: $text" },
-        done = "Done",
-        snooze = "Snooze",
-        cleared = { count -> "Removed $count reminder(s)." },
-        listNearest = { count, nearest, remaining ->
-            when {
-                count == 0 -> "No reminders."
-                nearest == null -> "$count reminder(s)."
-                else -> "$count reminder(s). Next: $nearest, " +
-                    (remaining?.let { "$it left" } ?: "already due")
-            }
-        },
-    )
+    private val EN = object : Texts() {
+        override val defaultText = "Reminder"
+        override val noTime = "I didn't catch the time. Try: \"remind me in 10 minutes to take the tea off\"."
+        override val done = "Done"
+        override val snooze = "Snooze"
+
+        override fun scheduled(at: String) = "Noted. I'll remind you at $at."
+        override fun due(text: String) = "time: $text"
+        override fun cleared(count: Int) = "Removed $count reminder(s)."
+        override fun listNearest(count: Int, nearest: String?, remaining: String?) = when {
+            count == 0 -> "No reminders."
+            nearest == null -> "$count reminder(s)."
+            else -> "$count reminder(s). Next: $nearest, " +
+                (remaining?.let { "$it left" } ?: "already due")
+        }
+    }
 
     /** Тексты под текущий язык устройства. */
     fun forContext(context: Context): Texts {
