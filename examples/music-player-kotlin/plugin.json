@@ -6,7 +6,7 @@
   "category": "general",
   "description": "Голосовое управление системным плеером: включить, пауза, следующий трек, узнать что играет. Красивое уведомление с кнопками ▶ ⏸ ⏭ ⏮.",
   "iconName": "wave",
-  "minHostVersion": "3.0.0",
+  "minHostVersion": "2.0.0",
   "entryPoint": "com.example.amalia.music.MusicPlugin",
   "phrases": {
     "ru": [
