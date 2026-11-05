@@ -14,7 +14,7 @@ on:
       example:
         description: "Папка примера в examples/"
         required: true
-        default: "reminder-kotlin"
+        default: "music-player-kotlin"
       publish_release:
         description: "Опубликовать релиз со ссылкой на скачивание"
         type: boolean
@@ -38,7 +38,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      EXAMPLE: ${{ github.event.inputs.example || 'reminder-kotlin' }}
+      EXAMPLE: ${{ github.event.inputs.example || 'music-player-kotlin' }}
 
     steps:
       - uses: actions/checkout@v4
