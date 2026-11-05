@@ -1,0 +1,22 @@
+// Контракты хоста — дословная референс-копия из SDK.
+//
+// Отдельный подпроект ради одного: его код не должен попасть в jar плагина.
+// Хост уже содержит эти классы, и дубликат в dex — ошибка загрузки, а не
+// «страховка».
+plugins {
+    kotlin("jvm")
+}
+
+sourceSets {
+    main {
+        // Берём минимальные контракты хоста из Amalia SDK
+        kotlin.srcDir(rootProject.file("../../amalia-sdk/sdk/api/minimal"))
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+val androidJar = rootProject.extra["androidJar"] as File
+
+dependencies {
+    compileOnly(files(androidJar))
+}

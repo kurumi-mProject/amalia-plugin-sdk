@@ -1,0 +1,23 @@
+{
+  "id": "com.example.amalia.music",
+  "name": "Music Player",
+  "version": "1.0.0",
+  "author": "example",
+  "category": "general",
+  "description": "Голосовое управление системным плеером: включить, пауза, следующий трек, узнать что играет. Красивое уведомление с кнопками ▶ ⏸ ⏭ ⏮.",
+  "iconName": "wave",
+  "minHostVersion": "3.0.0",
+  "entryPoint": "com.example.amalia.music.MusicPlugin",
+  "phrases": {
+    "ru": [
+      "Включить? Уже.",
+      "Следующий? Готово.",
+      "Сама слушаю — не говорите никому."
+    ],
+    "en": [
+      "Play? Done.",
+      "Next? On it.",
+      "I listen too — don't tell anyone."
+    ]
+  }
+}
