@@ -1,5 +1,7 @@
 package com.my.amali.plugin
 
+import com.my.amali.data.ai.AmaliaTool
+
 /**
  * Минимальный набор контрактов для сборки плагина без UI.
  *
@@ -18,6 +20,23 @@ package com.my.amali.plugin
  * Файл собран скриптом `tools/extract-minimal-contracts.py`, чтобы копия
  * не разъезжалась с оригиналом вручную.
  */
+
+/**
+ * Вклад голосовых инструментов.
+ *
+ * Каждый [AmaliaTool] попадает в общий [com.my.amali.data.ai.ToolRegistry]
+ * и становится доступен модели как skill. Реестр отбрасывает дубликаты
+ * имён — первый плагин, объявивший имя, выигрывает.
+ */
+interface ToolContributor {
+    /**
+     * Инструменты плагина.
+     *
+     * @param context среда плагина — обработчики могут свериться,
+     *   включён ли соседний плагин, или взять контекст для системных вызовов.
+     */
+    fun tools(context: PluginContext): List<AmaliaTool>
+}
 
 /**
  * Вклад готовых возможностей системы.
@@ -201,4 +220,44 @@ data class ActionSpec(
 interface NotificationActionHandler {
     /** Нажата кнопка [actionId] в уведомлении расширения. */
     suspend fun onAction(actionId: String)
+}
+
+/**
+ * Вклад звуковой сессии: «я играю звук, считайся со мной».
+ *
+ * Главный сценарий — приглушение. Когда говорит Амалия, музыка расширения
+ * стихает, а после — возвращается. Хост не знает, какой у фичи плеер;
+ * он лишь сообщает [AudioSessionHost] о фазах речи, а расширение само
+ * решает, что делать со своей громкостью.
+ */
+interface AudioSessionContributor {
+    /** Возвращает обработчик сессии с фасадом управления громкостью. */
+    fun session(host: AudioSessionHost): AudioSessionHandler
+}
+
+/**
+ * Фасад управления звуком сессии.
+ *
+ * @property isSpeaking говорит ли сейчас Амалия.
+ */
+interface AudioSessionHost {
+    val isSpeaking: Boolean
+}
+
+/**
+ * Обработчик фаз речи для аудио-расширения.
+ *
+ * Хост вызывает [onAssistantSpeaking] при старте и окончании речи
+ * Амалии. Расширение вправе приглушить свой звук на [duckVolume] и
+ * вернуть прежнюю громкость в [onAssistantDone].
+ */
+interface AudioSessionHandler {
+    /** Амалия начала говорить — приглушить свой звук. */
+    fun onAssistantSpeaking(duckVolume: Float = 0.25f)
+
+    /** Амалия закончила — вернуть громкость. */
+    fun onAssistantDone()
+
+    /** Сессия расширения закрывается (фича выключена). */
+    fun release()
 }

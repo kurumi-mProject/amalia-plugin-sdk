@@ -25,7 +25,7 @@ dependencies {
 
 // Имя артефакта фиксируем, классы хоста явно исключаем на случай сюрпризов.
 tasks.named<Jar>("jar") {
-    archiveBaseName.set("music-plugin")
+    archiveBaseName.set("plugin")
     archiveVersion.set("")
     archiveClassifier.set("")
     exclude("com/my/amali/**")

@@ -23,6 +23,7 @@ TARGET = pathlib.Path("sdk/api/minimal/Contributions.kt")
 
 # Объявления, нужные плагину без UI. Порядок = порядок в файле.
 WANTED = [
+    "ToolContributor",
     "CapabilityContributor",
     "CommandContributor",
     "CommandResult",
@@ -33,11 +34,16 @@ WANTED = [
     "NotificationSpec",
     "ActionSpec",
     "NotificationActionHandler",
+    "AudioSessionContributor",
+    "AudioSessionHost",
+    "AudioSessionHandler",
 ]
 
 DECL = re.compile(r"^(?:sealed\s+)?(?:interface|data class|enum class|object)\s+(\w+)\b")
 
 HEADER = '''package com.my.amali.plugin
+
+import com.my.amali.data.ai.AmaliaTool
 
 /**
  * Минимальный набор контрактов для сборки плагина без UI.

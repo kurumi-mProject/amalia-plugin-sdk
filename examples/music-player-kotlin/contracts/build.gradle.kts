@@ -10,7 +10,7 @@ plugins {
 sourceSets {
     main {
         // Берём минимальные контракты хоста из Amalia SDK
-        kotlin.srcDir(rootProject.file("../../amalia-sdk/sdk/api/minimal"))
+        kotlin.srcDir(rootProject.file("../../sdk/api/minimal"))
     }
 }
 

@@ -34,7 +34,7 @@ echo "==> Собираем plugin.jar..."
 cd "$ROOT"
 ./gradlew --no-daemon :plugin:jar
 
-JAR="$ROOT/plugin/build/libs/music-plugin.jar"
+JAR="$ROOT/plugin/build/libs/plugin.jar"
 if [[ ! -f "$JAR" ]]; then
     echo "ERROR: jar не найден после сборки: $JAR"
     exit 1
