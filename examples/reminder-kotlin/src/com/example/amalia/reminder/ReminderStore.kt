@@ -1,8 +1,6 @@
 package com.example.amalia.reminder
 
 import android.content.Context
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
 
 /** Одно напоминание. */
@@ -20,68 +18,60 @@ internal data class Reminder(
  * последним и разбирается с ограничением в три части, поэтому вертикальная
  * черта внутри самой заметки («купить хлеб | молоко») ничего не ломает.
  *
- * Файл, а не база данных: напоминаний десятки, а не тысячи, и плагин не
- * должен тянуть зависимость ради трёх полей. Хранилище переживает
- * перезапуск процесса — именно поэтому напоминание не теряется, когда
- * Android выгружает приложение.
+ * Синхронные операции: файл маленький (десятки строк), читается мгновенно.
+ * Вызовы идут из suspend-контекста хоста, который уже на IO-диспетчере.
  */
 internal class ReminderStore(context: Context) {
 
     private val file = File(context.applicationContext.filesDir, FILE_NAME)
 
     /** Все напоминания, ближайшее — первым. */
-    suspend fun all(): List<Reminder> = withContext(Dispatchers.IO) {
-        runCatching {
-            if (!file.isFile) return@runCatching emptyList()
-            file.readLines()
-                .mapNotNull(::decode)
-                .sortedBy { it.dueAtMillis }
-        }.getOrDefault(emptyList())
-    }
+    fun all(): List<Reminder> = runCatching {
+        if (!file.isFile) return emptyList()
+        file.readLines()
+            .mapNotNull(::decode)
+            .sortedBy { it.dueAtMillis }
+    }.getOrDefault(emptyList())
 
     /** Добавляет напоминание и возвращает его с выданным id. */
-    suspend fun add(dueAtMillis: Long, text: String): Reminder = withContext(Dispatchers.IO) {
+    fun add(dueAtMillis: Long, text: String): Reminder {
         val existing = all()
-        // Простой монотонный id: он нужен только чтобы различать записи
-        // внутри одного файла, а не чтобы быть глобально уникальным.
         val id = (existing.maxOfOrNull { it.id } ?: 0L) + 1L
         val reminder = Reminder(id = id, dueAtMillis = dueAtMillis, text = text.trim())
         write(existing + reminder)
-        reminder
+        return reminder
     }
 
     /** Убирает напоминание по id. Возвращает `true`, если что-то убрали. */
-    suspend fun remove(id: Long): Boolean = withContext(Dispatchers.IO) {
+    fun remove(id: Long): Boolean {
         val existing = all()
         val left = existing.filterNot { it.id == id }
-        if (left.size == existing.size) return@withContext false
+        if (left.size == existing.size) return false
         write(left)
-        true
+        return true
     }
 
     /** Сдвигает напоминание на [minutes] вперёд. */
-    suspend fun snooze(id: Long, minutes: Int): Boolean = withContext(Dispatchers.IO) {
+    fun snooze(id: Long, minutes: Int): Boolean {
         val existing = all()
-        val target = existing.firstOrNull { it.id == id } ?: return@withContext false
+        val target = existing.firstOrNull { it.id == id } ?: return false
         val updated = existing.map {
             if (it.id == id) it.copy(dueAtMillis = target.dueAtMillis + minutes * 60_000L) else it
         }
         write(updated)
-        true
+        return true
     }
 
     /** Убирает все напоминания. Возвращает, сколько убрали. */
-    suspend fun clear(): Int = withContext(Dispatchers.IO) {
+    fun clear(): Int {
         val count = all().size
         if (count > 0) write(emptyList())
-        count
+        return count
     }
 
     private fun write(items: List<Reminder>) {
         runCatching {
-            // Пишем атомарно: сначала во временный файл, потом переименовываем.
-            // Иначе выгрузка процесса в момент записи оставит обрезанный файл,
-            // и все напоминания исчезнут разом.
+            // Атомарная запись: сначала во временный файл, потом rename.
             val tmp = File(file.parentFile, "$FILE_NAME.tmp")
             tmp.writeText(items.joinToString(separator = "\n", transform = ::encode))
             if (!tmp.renameTo(file)) {
