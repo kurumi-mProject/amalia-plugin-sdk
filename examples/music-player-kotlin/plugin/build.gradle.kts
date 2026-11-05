@@ -1,32 +1,19 @@
-// Сам плагин. В jar попадают только его классы: контракты хоста подключены
-// как compileOnly и в артефакт не уезжают.
 plugins {
     kotlin("jvm")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
-
-sourceSets {
-    main {
-        kotlin.srcDir(rootProject.file("plugin/src"))
-    }
+sourceSets.main {
+    kotlin.srcDir(rootProject.file("plugin/src"))
+    // Keep the assets/ prefix: the same entries are copied to the final package.
+    resources.srcDir(rootProject.projectDir)
+    resources.include("assets/**")
 }
-
-@Suppress("UNCHECKED_CAST")
-val androidJar = rootProject.extra["androidJar"] as File
-
 dependencies {
-    // Контракты хоста: нужны на компиляции, в dex не попадают.
     compileOnly(project(":contracts"))
-    // android.content.Context, android.R.drawable.* — стабы платформы.
-    compileOnly(files(androidJar))
-    // Корутины нужны в обработчиках CommandContributor / NotificationContributor.
-    // Kotlin stdlib хост уже несёт, а coroutines-core нужно включить в dex.
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 }
-
-// Имя артефакта фиксируем, классы хоста явно исключаем на случай сюрпризов.
 tasks.named<Jar>("jar") {
     archiveBaseName.set("plugin")
     archiveVersion.set("")
     archiveClassifier.set("")
-    exclude("com/my/amali/**")
+    exclude("com/my/amali/**", "kotlin/**", "kotlinx/**", "androidx/**")
 }

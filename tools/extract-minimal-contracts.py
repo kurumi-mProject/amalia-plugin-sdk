@@ -28,6 +28,7 @@ WANTED = [
     "CommandContributor",
     "CommandResult",
     "BackgroundContributor",
+    "BackgroundWorkType",
     "BackgroundState",
     "NotificationContributor",
     "NotificationHost",

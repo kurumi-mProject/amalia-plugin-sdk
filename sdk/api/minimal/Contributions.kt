@@ -108,6 +108,9 @@ interface BackgroundContributor {
     suspend fun state(): BackgroundState
 }
 
+/** Тип долгоживущей работы для foreground-сервиса хоста. */
+enum class BackgroundWorkType { DATA_SYNC, MEDIA_PLAYBACK }
+
 /** Что делает фича прямо сейчас. */
 sealed interface BackgroundState {
     /** Фича ничего не делает — сервис можно не держать. */
@@ -128,6 +131,8 @@ sealed interface BackgroundState {
         val title: String? = null,
         /** Готовая строка текста уведомления; перекрывает [textRes]. */
         val text: String? = null,
+        /** Тип работы объявляется явно; хост объединяет типы всех активных вкладчиков. */
+        val foregroundType: BackgroundWorkType = BackgroundWorkType.DATA_SYNC,
     ) : BackgroundState
 }
 

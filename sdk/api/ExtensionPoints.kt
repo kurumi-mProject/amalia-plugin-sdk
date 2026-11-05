@@ -228,6 +228,8 @@ data class ScreenSpec(
     val inNavigation: Boolean = false,
     val iconName: String = "",
     val content: @androidx.compose.runtime.Composable (ScreenHost) -> Unit,
+    /** Готовый заголовок; перекрывает [titleRes], в том числе при titleRes = 0. */
+    val title: String? = null,
 )
 
 /**
@@ -351,6 +353,9 @@ interface BackgroundContributor {
     suspend fun state(): BackgroundState
 }
 
+/** Тип долгоживущей работы для foreground-сервиса хоста. */
+enum class BackgroundWorkType { DATA_SYNC, MEDIA_PLAYBACK }
+
 /** Что делает фича прямо сейчас. */
 sealed interface BackgroundState {
     /** Фича ничего не делает — сервис можно не держать. */
@@ -371,6 +376,8 @@ sealed interface BackgroundState {
         val title: String? = null,
         /** Готовая строка текста уведомления; перекрывает [textRes]. */
         val text: String? = null,
+        /** Тип работы объявляется явно; хост объединяет типы всех активных вкладчиков. */
+        val foregroundType: BackgroundWorkType = BackgroundWorkType.DATA_SYNC,
     ) : BackgroundState
 }
 

@@ -1,59 +1,47 @@
 #!/usr/bin/env bash
-# pack.sh — компилирует плагин и упаковывает в .amaliaplug
-#
-# Использование:
-#   ./pack.sh
-#
-# Требования:
-#   • JDK 17
-#   • Android SDK: platforms;android-34 + build-tools;34.0.0
-#   • Gradle (скачается автоматически через wrapper, если есть)
-#   • ANDROID_HOME задана
-
+# Build only a JVM plugin JAR, dex it, and package with the SDK's common packer.
 set -euo pipefail
-
-ROOT="$(cd "$(dirname "$0")" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SDK_ROOT="$(cd "$ROOT/../.." && pwd)"
 ANDROID_HOME="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$HOME/Android/Sdk}}"
-D8="$ANDROID_HOME/build-tools/34.0.0/d8"
-ANDROID_JAR="$ANDROID_HOME/platforms/android-34/android.jar"
+ANDROID_API="${ANDROID_API:-35}"
+BUILD_TOOLS="${BUILD_TOOLS:-35.0.0}"
+D8="$ANDROID_HOME/build-tools/$BUILD_TOOLS/d8"
+ANDROID_JAR="$ANDROID_HOME/platforms/android-$ANDROID_API/android.jar"
 OUT="$ROOT/dist"
-
-echo "==> Проверяем инструменты..."
-if [[ ! -f "$D8" ]]; then
-    echo "ERROR: d8 не найден: $D8"
-    echo "Установите: sdkmanager 'build-tools;34.0.0'"
+export ANDROID_HOME
+for tool in "$D8" "$ANDROID_JAR"; do
+    if [[ ! -f "$tool" ]]; then
+        echo "Missing $tool; install platforms;android-$ANDROID_API and build-tools;$BUILD_TOOLS" >&2
+        exit 1
+    fi
+done
+if [[ -x "$ROOT/gradlew" ]]; then
+    GRADLE=("$ROOT/gradlew")
+elif [[ -n "${GRADLE_BIN:-}" ]]; then
+    GRADLE=("$GRADLE_BIN")
+elif command -v gradle >/dev/null 2>&1; then
+    GRADLE=(gradle)
+else
+    echo "Gradle 8.10.2 is required: install gradle or set GRADLE_BIN." >&2
     exit 1
 fi
-if [[ ! -f "$ANDROID_JAR" ]]; then
-    echo "ERROR: android.jar не найден: $ANDROID_JAR"
-    echo "Установите: sdkmanager 'platforms;android-34'"
+if ! "${GRADLE[@]}" --version | grep -q '^Gradle 8\.10\.2$'; then
+    echo "Use Gradle 8.10.2 (set GRADLE_BIN to its executable)." >&2
     exit 1
 fi
-
-echo "==> Собираем plugin.jar..."
 cd "$ROOT"
-./gradlew --no-daemon :plugin:jar
-
+"${GRADLE[@]}" --no-daemon -PandroidApi="$ANDROID_API" :plugin:dex
 JAR="$ROOT/plugin/build/libs/plugin.jar"
-if [[ ! -f "$JAR" ]]; then
-    echo "ERROR: jar не найден после сборки: $JAR"
-    exit 1
-fi
-
-echo "==> Конвертируем jar → dex..."
-mkdir -p "$OUT/dex"
-"$D8" --min-api 26 \
-    --lib "$ANDROID_JAR" \
-    --output "$OUT/dex/" \
-    "$JAR"
-
-echo "==> Упаковываем .amaliaplug..."
+[[ -f "$JAR" ]] || { echo "Missing $JAR" >&2; exit 1; }
+# A fresh staging directory prevents obsolete dex shards/assets from entering a new release.
 mkdir -p "$OUT"
-cp "$ROOT/plugin.json" "$OUT/dex/plugin.json"
-(cd "$OUT/dex" && zip -r "$OUT/music-player.amaliaplug" plugin.json classes.dex)
-rm "$OUT/dex/plugin.json"
-
-echo ""
-echo "✅ Готово: $OUT/music-player.amaliaplug"
-echo ""
-sha256sum "$OUT/music-player.amaliaplug"
+STAGE="$(mktemp -d "$OUT/stage.XXXXXX")"
+trap 'rm -r "$STAGE"' EXIT
+cp "$ROOT"/dex/classes*.dex "$STAGE/"
+for dex in "$STAGE"/classes*.dex; do
+    python3 "$SDK_ROOT/tools/check-dex.py" "$dex"
+done
+cp "$STAGE/classes.dex" "$ROOT/classes.dex"
+# The common packer validates the manifest and includes plugin-owned assets/.
+bash "$SDK_ROOT/tools/pack.sh" "$ROOT" "$OUT"

@@ -1,22 +1,29 @@
-// Контракты хоста — дословная референс-копия из SDK.
-//
-// Отдельный подпроект ради одного: его код не должен попасть в jar плагина.
-// Хост уже содержит эти классы, и дубликат в dex — ошибка загрузки, а не
-// «страховка».
 plugins {
     kotlin("jvm")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
-sourceSets {
-    main {
-        // Берём минимальные контракты хоста из Amalia SDK
-        kotlin.srcDir(rootProject.file("../../sdk/api/minimal"))
+// One checked-in stub source describes two host JVM facades. Split it before compilation
+// so invokestatic owners match AmaliaScaffoldKt and GlassCardKt exactly.
+val hostUiSource = rootProject.file("../../sdk/api/player-ui/HostUi.kt")
+val generatedUi = layout.buildDirectory.dir("generated/host-ui")
+val generateHostUi by tasks.registering {
+    inputs.file(hostUiSource)
+    outputs.dir(generatedUi)
+    doLast {
+        val source = hostUiSource.readText()
+        val marker = "// GLASS_CARD_FACADE"
+        val imports = source.substringBefore("@Composable\nfun AmaliaScreen")
+        val directory = generatedUi.get().asFile.apply { mkdirs() }
+        directory.resolve("AmaliaScaffold.kt").writeText(source.substringBefore(marker))
+        directory.resolve("GlassCard.kt").writeText(
+            imports.replace("AmaliaScaffoldKt", "GlassCardKt") + source.substringAfter(marker)
+        )
     }
 }
-
-@Suppress("UNCHECKED_CAST")
-val androidJar = rootProject.extra["androidJar"] as File
-
-dependencies {
-    compileOnly(files(androidJar))
+sourceSets.main {
+    kotlin.srcDir(rootProject.file("../../sdk/api/minimal"))
+    kotlin.srcDir(rootProject.file("../../sdk/api/player-ui"))
+    kotlin.exclude("HostUi.kt")
+    kotlin.srcDir(files(generatedUi).builtBy(generateHostUi))
 }

@@ -43,6 +43,6 @@ data class PluginMetadata(
 
     companion object {
         /** Версия хоста, на которую собраны встроенные плагины. */
-        const val HOST_VERSION: String = "2.0.0"
+        const val HOST_VERSION: String = "2.1.0"
     }
 }

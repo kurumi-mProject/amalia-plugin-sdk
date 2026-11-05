@@ -50,8 +50,8 @@ TARGET="$OUT_DIR/${PACKAGE_NAME}.amaliaplug"
 
 mkdir -p "$OUT_DIR"
 
-# 2. Упаковка. Кладём только то, что хост реально читает: манифест и,
-#    если есть, dex. Лишние файлы в пакете — лишний вес загрузки.
+# 2. Упаковка: манифест, dex и собственные assets плагина.
+#    assets не сливаются с Android R хоста: плагин читает их из своего zip.
 python3 - "$SOURCE_DIR" "$TARGET" <<'PY'
 import pathlib, sys, zipfile
 
@@ -65,10 +65,17 @@ entries = [source / "plugin.json"]
 dex = source / "classes.dex"
 if dex.is_file():
     entries.append(dex)
+assets = source / "assets"
+if assets.is_dir():
+    for path in sorted(assets.rglob("*")):
+        if path.is_symlink():
+            raise SystemExit(f"assets must not contain symbolic links: {path}")
+        if path.is_file():
+            entries.append(path)
 
 with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as archive:
     for path in entries:
-        info = zipfile.ZipInfo(path.name, date_time=(1980, 1, 1, 0, 0, 0))
+        info = zipfile.ZipInfo(path.relative_to(source).as_posix(), date_time=(1980, 1, 1, 0, 0, 0))
         info.compress_type = zipfile.ZIP_DEFLATED
         info.external_attr = 0o644 << 16
         archive.writestr(info, path.read_bytes())

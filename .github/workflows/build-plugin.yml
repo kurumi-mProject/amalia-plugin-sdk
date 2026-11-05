@@ -52,7 +52,7 @@ jobs:
       - name: Locate Android SDK
         run: |
           set -euo pipefail
-          for candidate in "$ANDROID_HOME" "$ANDROID_SDK_ROOT" /usr/local/lib/android/sdk; do
+          for candidate in "${ANDROID_HOME:-}" "${ANDROID_SDK_ROOT:-}" /usr/local/lib/android/sdk; do
             if [[ -n "${candidate:-}" && -d "$candidate" ]]; then
               SDK="$candidate"
               break
@@ -66,20 +66,20 @@ jobs:
           echo "SDK=$SDK"
           ls "$SDK/platforms" || true
 
-      - name: Ensure android-34 platform and build-tools
+      - name: Ensure Android platform and build-tools
         run: |
           set -euo pipefail
-          if [[ ! -f "$ANDROID_HOME/platforms/android-34/android.jar" ]]; then
+          if [[ ! -f "$ANDROID_HOME/platforms/android-35/android.jar" ]]; then
             yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
-              --install "platforms;android-34" "build-tools;34.0.0" > /dev/null
+              --install "platforms;android-35" "build-tools;35.0.0" > /dev/null
           fi
           # d8 может отсутствовать в базовом образе — ставим build-tools.
-          if [[ ! -x "$ANDROID_HOME/build-tools/34.0.0/d8" ]]; then
+          if [[ ! -x "$ANDROID_HOME/build-tools/35.0.0/d8" ]]; then
             yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
-              --install "build-tools;34.0.0" > /dev/null
+              --install "build-tools;35.0.0" > /dev/null
           fi
-          ls -la "$ANDROID_HOME/platforms/android-34/android.jar"
-          "$ANDROID_HOME/build-tools/34.0.0/d8" --version || true
+          ls -la "$ANDROID_HOME/platforms/android-35/android.jar"
+          "$ANDROID_HOME/build-tools/35.0.0/d8" --version || true
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -101,18 +101,23 @@ jobs:
       - name: Convert jar to classes.dex
         run: |
           set -euo pipefail
-          D8="$ANDROID_HOME/build-tools/34.0.0/d8"
+          D8="$ANDROID_HOME/build-tools/35.0.0/d8"
           JAR="examples/$EXAMPLE/plugin/build/libs/plugin.jar"
           [[ -f "$JAR" ]] || { echo "нет $JAR" >&2; exit 1; }
           mkdir -p "examples/$EXAMPLE/dex"
           # --min-api 26 = минимальная поддерживаемая версия Android у Амалии.
           # --lib даёт d8 список классов платформы: без него он ругается на
           # любой android.* и kotlin.*, которого нет в jar.
-          "$D8" \
-            --min-api 26 \
-            --lib "$ANDROID_HOME/platforms/android-34/android.jar" \
-            --output "examples/$EXAMPLE/dex" \
-            "$JAR"
+          if [[ "$EXAMPLE" == "music-player-kotlin" ]]; then
+            # Kotlin 2.2 requires D8/R8 >= 8.10.21; the plugin pins it in Gradle.
+            gradle --no-daemon -p "examples/$EXAMPLE" :plugin:dex
+          else
+            "$D8" \
+              --min-api 26 \
+              --lib "$ANDROID_HOME/platforms/android-35/android.jar" \
+              --output "examples/$EXAMPLE/dex" \
+              "$JAR"
+          fi
           ls -la "examples/$EXAMPLE/dex/"
 
       - name: Check dex does not contain host contracts

@@ -58,6 +58,9 @@ interface HostServices {
      * который всё равно не сработает.
      */
     fun canNotify(): Boolean
+
+    /** Запросить foreground для активного фонового вклада и дождаться готовности. */
+    suspend fun ensureForeground(pluginId: String): Boolean = false
 }
 
 /**

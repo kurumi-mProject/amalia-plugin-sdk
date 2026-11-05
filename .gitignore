@@ -10,3 +10,10 @@ dist/
 # Python
 __pycache__/
 *.pyc
+
+# Local plugin toolchains and generated outputs
+.gradle/
+.kotlin/
+build/
+classes.dex
+dex/
