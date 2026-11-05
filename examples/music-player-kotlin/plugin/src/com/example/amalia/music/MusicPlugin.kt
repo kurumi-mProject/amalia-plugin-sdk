@@ -2,11 +2,6 @@ package com.example.amalia.music
 
 import android.content.Context
 import android.media.AudioManager
-import com.my.amali.data.ai.AmaliaTool
-import com.my.amali.data.ai.ToolArguments
-import com.my.amali.data.ai.ToolDefinition
-import com.my.amali.data.ai.ToolOutcome
-import com.my.amali.data.ai.ToolParameter
 import com.my.amali.plugin.ActionSpec
 import com.my.amali.plugin.AmaliaPlugin
 import com.my.amali.plugin.AudioSessionContributor
@@ -24,7 +19,6 @@ import com.my.amali.plugin.NotificationSpec
 import com.my.amali.plugin.PluginCategory
 import com.my.amali.plugin.PluginContext
 import com.my.amali.plugin.PluginMetadata
-import com.my.amali.plugin.ToolContributor
 
 /**
  * Music Player — управление системным медиаплеером через Амалию.
@@ -71,7 +65,6 @@ import com.my.amali.plugin.ToolContributor
 class MusicPlugin :
     AmaliaPlugin,
     CommandContributor,
-    ToolContributor,
     NotificationContributor,
     NotificationActionHandler,
     BackgroundContributor,
@@ -174,80 +167,6 @@ class MusicPlugin :
     private fun normalize(s: String): String =
         s.trim().lowercase().replace(TRAILING_PUNCT, "").trim()
 
-    // ════════════════════════════════════════════════════════════════
-    //  ИНСТРУМЕНТ ДЛЯ МОДЕЛИ (tool calling)
-    // ════════════════════════════════════════════════════════════════
-
-    override fun tools(context: PluginContext): List<AmaliaTool> = listOf(musicControl())
-
-    private fun musicControl() = AmaliaTool(
-        definition = ToolDefinition(
-            name = "music_control",
-            description = "Управляет системным медиаплеером. " +
-                "Используй когда пользователь хочет включить/выключить/переключить музыку, " +
-                "но фраза не попала в голосовые команды — например «включи что-нибудь» или " +
-                "«поставь на паузу». " +
-                "Действия: play, pause, next, previous, stop, status.",
-            parameters = listOf(
-                ToolParameter(
-                    name = "action",
-                    type = ToolParameter.JsonType.STRING,
-                    description = "Что сделать с плеером",
-                    enumValues = listOf("play", "pause", "next", "previous", "stop", "status"),
-                ),
-            ),
-        ),
-        handler = { args -> handleTool(args) },
-    )
-
-    private fun handleTool(args: ToolArguments): ToolOutcome {
-        return when (args.string("action")) {
-            "play" -> {
-                player.play()
-                val t = player.currentTrack()
-                ToolOutcome.json(
-                    "ok" to true,
-                    "track" to (t?.shortLabel() ?: ""),
-                    "message" to (t?.spokenLabel() ?: "Музыка включена"),
-                )
-            }
-            "pause" -> {
-                player.pause()
-                ToolOutcome.json("ok" to true, "message" to "Поставила на паузу")
-            }
-            "next" -> {
-                player.next()
-                ToolOutcome.json("ok" to true, "message" to "Следующий трек")
-            }
-            "previous" -> {
-                player.previous()
-                ToolOutcome.json("ok" to true, "message" to "Предыдущий трек")
-            }
-            "stop" -> {
-                player.stop()
-                ToolOutcome.json("ok" to true, "message" to "Остановлено")
-            }
-            "status" -> {
-                val t = player.currentTrack()
-                if (t != null) {
-                    ToolOutcome.json(
-                        "playing" to t.isPlaying,
-                        "title" to t.title,
-                        "artist" to t.artist,
-                        "album" to (t.album ?: ""),
-                        "app" to (t.appLabel ?: ""),
-                        "message" to t.spokenLabel(),
-                    )
-                } else {
-                    ToolOutcome.json(
-                        "playing" to false,
-                        "message" to "Сейчас ничего не играет",
-                    )
-                }
-            }
-            else -> ToolOutcome.failed("Неизвестное действие")
-        }
-    }
 
     // ════════════════════════════════════════════════════════════════
     //  УВЕДОМЛЕНИЕ — «Artist — Title» с кнопками ▶ ⏸ ⏭ ⏮
