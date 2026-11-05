@@ -24,6 +24,7 @@ val generateHostUi by tasks.registering {
 sourceSets.main {
     kotlin.srcDir(rootProject.file("../../sdk/api/minimal"))
     kotlin.srcDir(rootProject.file("../../sdk/api/player-ui"))
-    kotlin.exclude("HostUi.kt")
+    // player-ui supplies the screen contracts; use the real Compose annotation from hostUi.
+    kotlin.exclude("Screen.kt", "ComposeStubs.kt", "HostUi.kt")
     kotlin.srcDir(files(generatedUi).builtBy(generateHostUi))
 }
