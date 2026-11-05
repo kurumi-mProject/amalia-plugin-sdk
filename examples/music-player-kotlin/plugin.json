@@ -1,11 +1,1 @@
-{
-  "id": "com.example.amalia.music",
-  "name": "Music Player",
-  "version": "2.0.0",
-  "author": "example",
-  "category": "general",
-  "description": "Локальная медиатека, собственный плеер, очередь, поиск и плейлисты. Инструменты ИИ работают с реальными песнями телефона.",
-  "iconName": "wave",
-  "minHostVersion": "2.1.0",
-  "entryPoint": "com.example.amalia.music.MusicPlugin"
-}
+{"id": "com.example.amalia.music", "name": "Music Player", "version": "1.0.0", "author": "example", "category": "general", "description": "Управление музыкой голосом и через уведомление", "iconName": "wave", "minHostVersion": "2.0.0", "entryPoint": "com.example.amalia.music.MusicPlugin"}
