@@ -59,5 +59,12 @@
   "unknown_artist": "不明なアーティスト",
   "unknown_album": "不明なアルバム",
   "remove_confirm": "選択した曲をプレイリストから削除しますか？",
-  "delete_confirm": "プレイリストを削除しますか？音声ファイルは端末に残ります。"
+  "delete_confirm": "プレイリストを削除しますか？音声ファイルは端末に残ります。",
+  "select_mode": "曲を選択",
+  "done": "完了",
+  "search_playlists": "プレイリストを検索",
+  "expand_player": "プレーヤーを開く",
+  "collapse_player": "音楽に戻る",
+  "paused": "一時停止中",
+  "library_action": "ライブラリを開く"
 }

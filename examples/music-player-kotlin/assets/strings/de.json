@@ -59,5 +59,12 @@
   "unknown_artist": "Unbekannter Interpret",
   "unknown_album": "Unbekanntes Album",
   "remove_confirm": "Ausgewählte Titel aus dieser Playlist entfernen?",
-  "delete_confirm": "Playlist löschen? Die Audiodateien bleiben auf dem Telefon."
+  "delete_confirm": "Playlist löschen? Die Audiodateien bleiben auf dem Telefon.",
+  "select_mode": "Songs auswählen",
+  "done": "Fertig",
+  "search_playlists": "Playlists suchen",
+  "expand_player": "Player öffnen",
+  "collapse_player": "Zurück zur Musik",
+  "paused": "Pausiert",
+  "library_action": "Mediathek öffnen"
 }

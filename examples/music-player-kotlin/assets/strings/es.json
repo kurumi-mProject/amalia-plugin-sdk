@@ -59,5 +59,12 @@
   "unknown_artist": "Artista desconocido",
   "unknown_album": "Álbum desconocido",
   "remove_confirm": "¿Quitar las canciones seleccionadas de esta lista?",
-  "delete_confirm": "¿Eliminar la lista? Los archivos de audio permanecerán en el teléfono."
+  "delete_confirm": "¿Eliminar la lista? Los archivos de audio permanecerán en el teléfono.",
+  "select_mode": "Seleccionar canciones",
+  "done": "Listo",
+  "search_playlists": "Buscar listas de reproducción",
+  "expand_player": "Abrir reproductor",
+  "collapse_player": "Volver a la música",
+  "paused": "En pausa",
+  "library_action": "Abrir biblioteca"
 }

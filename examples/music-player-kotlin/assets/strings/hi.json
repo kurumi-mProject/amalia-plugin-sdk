@@ -59,5 +59,12 @@
   "unknown_artist": "अज्ञात कलाकार",
   "unknown_album": "अज्ञात एल्बम",
   "remove_confirm": "चुने हुए गाने इस प्लेलिस्ट से हटाएँ?",
-  "delete_confirm": "यह प्लेलिस्ट हटाएँ? ऑडियो फ़ाइलें फ़ोन पर रहेंगी।"
+  "delete_confirm": "यह प्लेलिस्ट हटाएँ? ऑडियो फ़ाइलें फ़ोन पर रहेंगी।",
+  "select_mode": "गाने चुनें",
+  "done": "हो गया",
+  "search_playlists": "प्लेलिस्ट खोजें",
+  "expand_player": "प्लेयर खोलें",
+  "collapse_player": "संगीत पर वापस जाएँ",
+  "paused": "रुका हुआ",
+  "library_action": "लाइब्रेरी खोलें"
 }

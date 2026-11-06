@@ -59,5 +59,12 @@
   "unknown_artist": "未知歌手",
   "unknown_album": "未知专辑",
   "remove_confirm": "从歌单中移除所选歌曲？",
-  "delete_confirm": "删除此歌单？音频文件将保留在手机上。"
+  "delete_confirm": "删除此歌单？音频文件将保留在手机上。",
+  "select_mode": "选择歌曲",
+  "done": "完成",
+  "search_playlists": "搜索歌单",
+  "expand_player": "打开播放器",
+  "collapse_player": "返回音乐",
+  "paused": "已暂停",
+  "library_action": "打开音乐库"
 }

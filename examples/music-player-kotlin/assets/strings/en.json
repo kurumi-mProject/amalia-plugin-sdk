@@ -59,5 +59,12 @@
   "unknown_artist": "Unknown artist",
   "unknown_album": "Unknown album",
   "remove_confirm": "Remove selected songs from this playlist?",
-  "delete_confirm": "Delete this playlist? Audio files will stay on your phone."
+  "delete_confirm": "Delete this playlist? Audio files will stay on your phone.",
+  "select_mode": "Select songs",
+  "done": "Done",
+  "search_playlists": "Search playlists",
+  "expand_player": "Open player",
+  "collapse_player": "Back to music",
+  "paused": "Paused",
+  "library_action": "Open library"
 }
