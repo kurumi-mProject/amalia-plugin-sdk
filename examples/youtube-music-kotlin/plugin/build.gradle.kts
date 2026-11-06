@@ -1,0 +1,29 @@
+plugins { kotlin("jvm") }
+
+sourceSets.main {
+    kotlin.srcDir(rootProject.file("plugin/src"))
+}
+
+val androidJar = rootProject.extra["androidJar"] as File
+dependencies {
+    compileOnly(project(":contracts"))
+    compileOnly(files(androidJar))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.github.TeamNewPipe:NewPipeExtractor:v0.24.2")
+    implementation("androidx.media3:media3-common:1.3.1")
+    implementation("androidx.media3:media3-exoplayer:1.3.1")
+}
+
+// The legacy loader receives one DEX and does not resolve Maven dependencies.
+// Make a self-contained jar while keeping host contracts/platform classes out.
+tasks.named<Jar>("jar") {
+    archiveBaseName.set("youtube-music-plugin")
+    archiveVersion.set("")
+    archiveClassifier.set("")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+    exclude("com/my/amali/**", "kotlin/**", "kotlinx/**")
+    // Media3 is not supplied by the host and must remain in the plugin jar.
+    // Do not exclude androidx here: this is the legacy trusted loader format.
+}

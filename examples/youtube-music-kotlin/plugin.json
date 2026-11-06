@@ -1,0 +1,11 @@
+{
+  "id": "com.amalia.youtube.music",
+  "name": "YouTube Music",
+  "version": "1.0.0",
+  "author": "Amalia community",
+  "category": "general",
+  "description": "Поиск музыки на YouTube и фоновое воспроизведение аудио.",
+  "iconName": "wave",
+  "minHostVersion": "2.1.0",
+  "entryPoint": "com.amalia.youtube.music.YouTubeMusicPlugin"
+}
