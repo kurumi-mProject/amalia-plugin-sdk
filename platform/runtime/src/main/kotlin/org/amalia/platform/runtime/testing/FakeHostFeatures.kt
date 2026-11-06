@@ -42,7 +42,8 @@ class FakeHostFeatures(
     fun userGesture() { synchronized(lock) { check(!closed); browserGestures = 1 } }
     fun setSnapshot(snapshot: DeviceSnapshot) { synchronized(lock) {
         require(snapshot.maxMediaVolume >= 0 && snapshot.mediaVolume in 0..snapshot.maxMediaVolume)
-        require(snapshot.batteryFraction == null || snapshot.batteryFraction in 0f..1f)
+        val batteryFraction = snapshot.batteryFraction
+        require(batteryFraction == null || batteryFraction in 0f..1f)
         snapshotValue = snapshot
     } }
     private fun checkAccess(capability: String) {

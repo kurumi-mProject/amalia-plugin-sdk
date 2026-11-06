@@ -11,10 +11,6 @@ if (!androidJar.isFile) error("Missing $androidJar; install platforms;android-$a
 
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
-    repositories {
-        mavenCentral()
-        maven { url = uri("https://jitpack.io") }
-    }
     extensions.configure<JavaPluginExtension> {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
