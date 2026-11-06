@@ -351,7 +351,7 @@ class YouTubeMusicPlugin :
                 add(ActionSpec(ACTION_PLAY, android.R.drawable.ic_media_play, 0, "Продолжить"))
             }
         }
-        add(ActionSpec(ACTION_STOP, android.R.drawable.ic_media_stop, 0, "Остановить"))
+        add(ActionSpec(ACTION_STOP, android.R.drawable.ic_menu_close_clear_cancel, 0, "Остановить"))
     }
 
     private companion object {
