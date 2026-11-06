@@ -1,3 +1,5 @@
+> **Legacy SDK (v2).** This document describes `plugin.json` / `com.my.amali` contracts, not the SDK3 author API. For new plugins start with [SDK_CLI.md](SDK_CLI.md), [SDK3_STATUS.md](SDK3_STATUS.md) and [migration](MIGRATION_V3.md).
+
 # The store: catalog protocol and publishing
 
 The Amalia store is not a server we own — it is a **JSON file at a URL**. Host it

@@ -1,3 +1,5 @@
+> **Legacy SDK (v2).** This document describes `plugin.json` / `com.my.amali` contracts, not the SDK3 author API. For new plugins start with [SDK_CLI.md](SDK_CLI.md), [SDK3_STATUS.md](SDK3_STATUS.md) and [migration](MIGRATION_V3.md).
+
 # Quick start
 
 Everything a plugin is: a **zip** with a `plugin.json` at its root, named

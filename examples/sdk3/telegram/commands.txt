@@ -1,0 +1,5 @@
+manifest
+permissions
+tools
+invoke draft {"chat": "saved-messages", "text": "Remember the meeting"}
+quit

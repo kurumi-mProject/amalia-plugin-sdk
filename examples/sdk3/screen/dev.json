@@ -1,0 +1,10 @@
+{
+  "grantStorage": true,
+  "grantInvoke": true,
+  "networkGrants": [],
+  "storage": {},
+  "fixtures": [],
+  "featureGrants": [
+    "ui"
+  ]
+}

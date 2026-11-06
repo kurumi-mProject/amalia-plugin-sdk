@@ -1,0 +1,685 @@
+{
+    "schemaVersion": 1,
+    "description": "Native component contracts for this source revision; requires the matching Amalia host. UiDocuments.validate also checks graph, bindings, localization and actions.",
+    "components": [
+        {
+            "id": "org.amalia.ui.button",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "variant": {
+                        "type": "string",
+                        "enum": [
+                            "primary",
+                            "secondary",
+                            "quiet",
+                            "destructive"
+                        ]
+                    },
+                    "icon": {
+                        "type": "string",
+                        "enum": [
+                            "auto_awesome",
+                            "bolt",
+                            "favorite",
+                            "check",
+                            "schedule",
+                            "info",
+                            "notification",
+                            "play",
+                            "search",
+                            "mind",
+                            "wave",
+                            "settings"
+                        ]
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "default": true
+                    }
+                }
+            }
+        },
+        {
+            "id": "org.amalia.ui.actions",
+            "acceptsChildren": true,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {}
+            }
+        },
+        {
+            "id": "org.amalia.ui.hero",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "eyebrowKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "surface": {
+                        "type": "string",
+                        "enum": [
+                            "auto",
+                            "glass",
+                            "plain"
+                        ]
+                    },
+                    "titleKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "subtitleKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "icon": {
+                        "type": "string",
+                        "enum": [
+                            "auto_awesome",
+                            "bolt",
+                            "favorite",
+                            "check",
+                            "schedule",
+                            "info",
+                            "notification",
+                            "play",
+                            "search",
+                            "mind",
+                            "wave",
+                            "settings"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "id": "org.amalia.ui.section",
+            "acceptsChildren": true,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "titleKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "subtitleKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "elevated": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "surface": {
+                        "type": "string",
+                        "enum": [
+                            "auto",
+                            "glass",
+                            "plain"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "id": "org.amalia.ui.item",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "titleKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "subtitleKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "valueKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "titleBinding": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                            "source": {
+                                "type": "string",
+                                "enum": [
+                                    "LITERAL",
+                                    "STATE",
+                                    "FORM",
+                                    "ITEM"
+                                ],
+                                "default": "LITERAL"
+                            },
+                            "literal": {},
+                            "sourceId": {
+                                "type": "string",
+                                "maxLength": 128
+                            },
+                            "pointer": {
+                                "type": "string",
+                                "maxLength": 512
+                            }
+                        }
+                    },
+                    "surface": {
+                        "type": "string",
+                        "enum": [
+                            "auto",
+                            "glass",
+                            "plain"
+                        ]
+                    },
+                    "subtitleBinding": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                            "source": {
+                                "type": "string",
+                                "enum": [
+                                    "LITERAL",
+                                    "STATE",
+                                    "FORM",
+                                    "ITEM"
+                                ],
+                                "default": "LITERAL"
+                            },
+                            "literal": {},
+                            "sourceId": {
+                                "type": "string",
+                                "maxLength": 128
+                            },
+                            "pointer": {
+                                "type": "string",
+                                "maxLength": 512
+                            }
+                        }
+                    },
+                    "valueBinding": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                            "source": {
+                                "type": "string",
+                                "enum": [
+                                    "LITERAL",
+                                    "STATE",
+                                    "FORM",
+                                    "ITEM"
+                                ],
+                                "default": "LITERAL"
+                            },
+                            "literal": {},
+                            "sourceId": {
+                                "type": "string",
+                                "maxLength": 128
+                            },
+                            "pointer": {
+                                "type": "string",
+                                "maxLength": 512
+                            }
+                        }
+                    },
+                    "icon": {
+                        "type": "string",
+                        "enum": [
+                            "auto_awesome",
+                            "bolt",
+                            "favorite",
+                            "check",
+                            "schedule",
+                            "info",
+                            "notification",
+                            "play",
+                            "search",
+                            "mind",
+                            "wave",
+                            "settings",
+                            "none"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "id": "org.amalia.ui.metric",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "titleKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "valueKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "captionKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "accent": {
+                        "type": "boolean",
+                        "default": false
+                    }
+                }
+            }
+        },
+        {
+            "id": "org.amalia.ui.badge",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "tone": {
+                        "type": "string",
+                        "enum": [
+                            "neutral",
+                            "accent",
+                            "success",
+                            "warning",
+                            "error"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "id": "org.amalia.ui.progress",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "titleKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "captionKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    }
+                }
+            }
+        },
+        {
+            "id": "org.amalia.ui.grid",
+            "acceptsChildren": true,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "columns": {
+                        "type": "integer",
+                        "enum": [
+                            2,
+                            3
+                        ],
+                        "default": 2
+                    }
+                }
+            }
+        },
+        {
+            "id": "org.amalia.ui.notice",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "titleKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "messageKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "icon": {
+                        "type": "string",
+                        "enum": [
+                            "auto_awesome",
+                            "bolt",
+                            "favorite",
+                            "check",
+                            "schedule",
+                            "info",
+                            "notification",
+                            "play",
+                            "search",
+                            "mind",
+                            "wave",
+                            "settings"
+                        ]
+                    },
+                    "tone": {
+                        "type": "string",
+                        "enum": [
+                            "neutral",
+                            "accent",
+                            "success",
+                            "warning",
+                            "error"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "id": "org.amalia.ui.state",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "titleKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "descriptionKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "icon": {
+                        "type": "string",
+                        "enum": [
+                            "auto_awesome",
+                            "bolt",
+                            "favorite",
+                            "check",
+                            "schedule",
+                            "info",
+                            "notification",
+                            "play",
+                            "search",
+                            "mind",
+                            "wave",
+                            "settings"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "id": "org.amalia.ui.toggle",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "titleKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "subtitleKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "icon": {
+                        "type": "string",
+                        "enum": [
+                            "auto_awesome",
+                            "bolt",
+                            "favorite",
+                            "check",
+                            "schedule",
+                            "info",
+                            "notification",
+                            "play",
+                            "search",
+                            "mind",
+                            "wave",
+                            "settings",
+                            "none"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "id": "org.amalia.ui.slider",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "titleKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "subtitleKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "min": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1000000
+                    },
+                    "max": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1000000
+                    },
+                    "step": {
+                        "type": "number",
+                        "minimum": 1.0E-6,
+                        "maximum": 1000000
+                    },
+                    "unitKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    }
+                }
+            }
+        },
+        {
+            "id": "org.amalia.ui.choices",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "options": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 8,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                                "value",
+                                "labelKey"
+                            ],
+                            "properties": {
+                                "value": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128
+                                },
+                                "labelKey": {
+                                    "type": "string",
+                                    "maxLength": 128
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "id": "org.amalia.ui.list",
+            "acceptsChildren": true,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "pageSize": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 50,
+                        "default": 6
+                    },
+                    "previousKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "nextKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "summaryKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "emptyTitleKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    },
+                    "emptyDescriptionKey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                    }
+                },
+                "required": [
+                    "previousKey",
+                    "nextKey",
+                    "summaryKey"
+                ]
+            }
+        },
+        {
+            "id": "org.amalia.ui.spacer",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "size": {
+                        "type": "string",
+                        "enum": [
+                            "xs",
+                            "sm",
+                            "md",
+                            "lg",
+                            "xl"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "id": "org.amalia.ui.divider",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {}
+            }
+        },
+        {
+            "id": "org.amalia.ui.stack",
+            "acceptsChildren": true,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        {
+            "id": "org.amalia.ui.column",
+            "acceptsChildren": true,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        {
+            "id": "org.amalia.ui.glass",
+            "acceptsChildren": true,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        {
+            "id": "org.amalia.ui.heading",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        {
+            "id": "org.amalia.ui.text",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        {
+            "id": "org.amalia.ui.primary",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        {
+            "id": "org.amalia.ui.action",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        {
+            "id": "org.amalia.ui.input",
+            "acceptsChildren": false,
+            "properties": {
+                "type": "object",
+                "additionalProperties": false
+            }
+        }
+    ]
+}

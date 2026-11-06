@@ -1,0 +1,5 @@
+manifest
+permissions
+tools
+invoke select {"url": "https://archive.org/download/testmp3testfile/mpthreetest.mp3", "title": "Test track"}
+quit

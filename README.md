@@ -1,201 +1,208 @@
-# Amalia Plugin SDK
+# Amalia SDK3
 
-**Amalia** is a voice assistant for Android (Kotlin, Jetpack Compose). Its core is
-deliberately small: speech recognition, a language model, a voice — that is the
-product. Everything else is a **plugin**: themes, engine choices, device tools,
-voice commands, screens, notifications, background features, greeting phrases,
-character blocks.
+Standalone Kotlin/JVM SDK for plugins running in the Amalia Android host. SDK3 is
+an authoring facade over the existing protocol runtime, **not a new loader or a
+stable 3.0 ABI release**. The current artifacts are
+`org.amalia.platform:amalia-protocol:0.2.0-SNAPSHOT` and
+`org.amalia.platform:amalia-runtime:0.2.0-SNAPSHOT`.
+Use freshly published artifacts from this checkout and a compatible host; a public
+Maven release is not assumed.
 
-This repository is the SDK: documentation, the package format, the extension
-contracts, and runnable examples.
+[Русский](README.ru.md) · [中文](README.zh.md) · [Español](README.es.md) ·
+[日本語](README.ja.md) · [Deutsch](README.de.md) · [Français](README.fr.md) ·
+[हिन्दी](README.hi.md) · [العربية](README.ar.md)
 
-> **Read in your language:**
-> [Русский](README.ru.md) · [中文](README.zh.md) · [Español](README.es.md) ·
-> [日本語](README.ja.md) · [Deutsch](README.de.md) · [Français](README.fr.md) ·
-> [हिन्दी](README.hi.md) · [العربية](README.ar.md)
+**Start here:** [CLI guide](docs/SDK_CLI.md) ·
+[implementation and acceptance ledger](docs/SDK3_STATUS.md).
 
----
+## Requirements and local SDK publication
 
-## What a plugin can do
+- JDK 17, Gradle 9.7.1, Python 3; OpenSSL for signing packages.
+- Android SDK build-tools **D8 only for DEX packaging**. JAR compilation, platform
+  publication and the JVM development host do not need the Android SDK or app sources.
+- Maven Central / Gradle Plugin Portal access or cached dependencies. This is not
+  an offline distribution of Kotlin and third-party libraries.
 
-| Contribution | Interface | Example |
-|---|---|---|
-| Themes (backgrounds, accents, circadian ladder) | `ThemeContributor` | [theme-neon-glass](examples/theme-neon-glass) |
-| Engines: speech recognition, LLM, TTS | `EngineContributor` | — |
-| Tools the model can call | `ToolContributor` | [tool-kotlin](examples/tool-kotlin) |
-| Greeting phrases on the home screen | `PhraseContributor` | [phrases-localized](examples/phrases-localized) |
-| Character / system prompt blocks | `PromptContributor` | — |
-| Ask for the capabilities you need | `CapabilityContributor` | [command-kotlin](examples/command-kotlin) |
-| Voice commands handled **before** the model | `CommandContributor` | [reminder-kotlin](examples/reminder-kotlin), [command-kotlin](examples/command-kotlin) |
-| Your own screen inside the app | `ScreenContributor` | [extension-points.md](docs/extension-points.md) |
-| Notifications with action buttons | `NotificationContributor` | [notification-kotlin](examples/notification-kotlin) |
-| Long-running background state (foreground service) | `BackgroundContributor` | [notification-kotlin](examples/notification-kotlin) |
-| Mute other audio while Amalia speaks | `AudioSessionContributor` | [extension-points.md](docs/extension-points.md) |
-| Replace the home-screen visual (wave, lamp, greeting) | `WidgetContributor` | [extension-points.md](docs/extension-points.md) |
+Run these commands from this repository's root with `gradle` on `PATH`:
 
-Full reference: **[docs/extension-points.md](docs/extension-points.md)**.
-
----
-
-## Two kinds of plugins
-
-**1. Declarative — no code at all.** A `plugin.json` describing themes and
-phrases. This covers most "make it look different" requests.
-
-**2. Code plugin.** A `plugin.json` plus a `classes.dex` with a Kotlin/Java class
-that implements `AmaliaPlugin` and any contributions it needs.
-
-Both are shipped as a single **`.amaliaplug`** file — a zip:
-
-```
-my-plugin.amaliaplug
-├── plugin.json     ← mandatory
-├── classes.dex     ← optional (code plugins only)
-└── ...             ← any extra resources you read yourself
+```bash
+gradle -p platform \
+  :protocol:publishSdkPublicationToSdkDistributionRepository \
+  :runtime:publishSdkPublicationToSdkDistributionRepository
+export AMALIA_SDK_REPOSITORY="$PWD/platform/build/sdk-repository"
 ```
 
----
+This publishes a **directory-backed Maven repository**, not `mavenLocal()` or a
+public Maven service. Copy the complete `platform/build/sdk-repository` directory
+to another developer or serve it from a Maven repository. Use an absolute path in
+`-PamaliaSdkRepository=...`. Both artifacts must come from the same snapshot;
+`amalia-runtime` is required by the development console/fake host. These commands
+build JVM libraries, not an Android APK.
 
-## Quick start — a declarative theme in 5 minutes
+This checkout includes `./gradlew` and `gradle/wrapper`: you can use
+`./gradlew -p platform ...` instead of installed Gradle for SDK publication.
+Generated author projects do not include a wrapper: the CLI uses the project's
+`gradlew` when present, otherwise `gradle` from `PATH`. To use only the bundled
+wrapper, copy `gradlew` and `gradle/` into your generated author project before
+running CLI `dev`, `test` or `package`.
 
-1. Create `plugin.json`:
+## Create, validate and compile a plugin
 
-```json
-{
-  "id": "com.example.theme.sunset",
-  "name": "Sunset",
-  "version": "1.0.0",
-  "author": "you",
-  "category": "theme",
-  "description": "Warm dusk glass",
-  "iconName": "palette",
-  "minHostVersion": "2.0.0",
-  "themes": [
-    {
-      "id": "com.example.theme.sunset.dusk",
-      "name": "Sunset Dusk",
-      "forceDark": true,
-      "staticDark": {
-        "name": "Sunset",
-        "stops": [
-          { "color": "#1A0F14", "position": 0.0 },
-          { "color": "#2A1418", "position": 0.55 },
-          { "color": "#120A0D", "position": 1.0 }
-        ],
-        "isDark": true,
-        "cct": 2600,
-        "auroras": ["#FF7A59", "#FF3D7F"],
-        "motif": "FIREFLY"
-      }
+```bash
+./tools/amalia create plugin weather
+./tools/amalia add network weather --domain api.example.com
+./tools/amalia validate weather
+gradle -p weather jar -PamaliaSdkRepository="$AMALIA_SDK_REPOSITORY"
+```
+
+`amalia.json` is the single author manifest. Set your own `publisher`, package
+`id` (within that publisher namespace), `entryPoint`, name and version before
+publishing. Gradle generates `amalia.generated.GeneratedManifest`; do not edit
+that generated Kotlin or author `platform.json` yourself.
+
+The facade lives in `org.amalia.platform.protocol.sdk`:
+
+```kotlin
+import amalia.generated.GeneratedManifest
+import kotlinx.serialization.json.JsonPrimitive
+import org.amalia.platform.protocol.sdk.AmaliaApi
+import org.amalia.platform.protocol.sdk.AmaliaPlugin
+
+class Plugin : AmaliaPlugin() {
+    override val manifest = GeneratedManifest.value
+
+    override suspend fun install(api: AmaliaApi) {
+        api.tools.register("echo", "Echo a message") {
+            string("text", description = "Message to echo")
+            execute { JsonPrimitive(string("text")) }
+        }
     }
-  ],
-  "phrases": {
-    "ru": ["Закат включён."],
-    "en": ["Sunset is on."]
-  }
 }
 ```
 
-2. Zip it (the file **must** contain `plugin.json` at its root):
+Keep the package declaration generated by the CLI so the class matches
+`amalia.json.entryPoint`. The facade publishes `${id}.tools` and `${id}.local`
+after `install` and withdraws registrations before `uninstall`. Tools support
+schemas, timeout/cancellation and effect/idempotency; the default effect is WRITE.
+Host invocation grants remain mandatory, and WRITE tools require host confirmation.
+
+`add media|background|notifications|browser|device|secrets|screen PROJECT` declares
+host capabilities; only `add network` accepts `--domain`. **Declarations never
+grant authority.** The host independently verifies identity, generation, signed
+manifest review and user consent. Android permissions are separate.
+
+## Develop and test on the JVM
+
+Try the notes reference using its explicit fake-host grants:
 
 ```bash
-cd my-plugin && zip -r ../sunset.amaliaplug plugin.json
+./tools/amalia dev examples/sdk3/notes \
+  --config examples/sdk3/notes/dev.json \
+  --gradle-arg=-PamaliaSdkRepository="$AMALIA_SDK_REPOSITORY"
 ```
 
-3. In Amalia: **Settings → Plugins → Install from file**, pick the
-   `.amaliaplug` — or host it and publish it in a catalog
-   ([docs/catalog.md](docs/catalog.md)).
+```text
+tools
+invoke save {"name":"shopping","text":"Buy milk"}
+invoke read {"name":"shopping"}
+quit
+```
 
-Full guide: **[docs/quickstart.md](docs/quickstart.md)**.
+The console uses `FakePluginHost` and the real CoreRuntime for schema, grants,
+budget and lifecycle checks. Fake storage is bounded, in-memory and unencrypted;
+network is fixtures, not real HTTP. Feature grants are explicit in `dev.json`.
+It runs **trusted local code**, not a sandbox, Android emulator or device bridge.
+There is no watch/hot reload; restart after Kotlin changes. Do not put secrets in
+fixtures or share console output containing private data.
 
----
+```bash
+./tools/amalia test weather \
+  --gradle-arg=-PamaliaSdkRepository="$AMALIA_SDK_REPOSITORY"
+```
 
-## Repository map
+`test` compiles main classes and runs Gradle tests; it does not generate tests,
+and `NO-SOURCE` is not evidence of coverage.
 
-| Path | What |
+## Package and install
+
+Create a publisher P-256 key with OpenSSL, keep the private key outside the
+project/package and version control, and export its public SPKI pin for the host's
+trust configuration. With that key and D8 available:
+
+```bash
+./tools/amalia package weather \
+  --private-key /private/publisher.pem --key-id author-1 \
+  --gradle-arg=-PamaliaSdkRepository="$AMALIA_SDK_REPOSITORY" \
+  --output "$PWD/weather.amaliaplug"
+```
+
+Use `--d8 /absolute/path/d8` if D8 is not on `PATH` or discoverable through your
+Android SDK. The CLI builds the JAR and single DEX, checks inventory/class conflicts
+and verifies the signature before publishing the output. It refuses to overwrite
+an existing package. The signed ZIP contains:
+
+```text
+weather.amaliaplug
+├── platform.json
+├── package.sig
+└── classes.dex
+```
+
+Use a compatible Android host's package importer. Provisioning the trusted
+publisher pin, import, activation/capability consent and operation invocation
+grants are separate steps; producing a package does not perform any of them.
+The host still checks DEX/ABI compatibility. See the
+[detailed SDK guide](docs/SDK_GUIDE_RU.md).
+
+Host/shared Kotlin, kotlinx and protocol classes must not be bundled. Ordinary
+third-party JVM libraries needed at runtime belong in `implementation`, not only
+`compileOnly`. The CLI rejects AARs, resources, native payloads and multidex;
+class-name checks do not prove Android library compatibility.
+
+## Examples and source map
+
+| Path | Purpose |
 |---|---|
-| [`docs/quickstart.md`](docs/quickstart.md) | From zero to an installed plugin |
-| [`docs/manifest.md`](docs/manifest.md) | Every `plugin.json` field |
-| [`docs/themes.md`](docs/themes.md) | Declarative themes and palettes |
-| [`docs/packaging.md`](docs/packaging.md) | Building `classes.dex`, zipping, checking |
-| [`docs/extension-points.md`](docs/extension-points.md) | All contribution interfaces |
-| [`docs/capabilities.md`](docs/capabilities.md) | Capabilities, special accesses, permissions |
-| [`docs/localization.md`](docs/localization.md) | Multi-language plugins and phrase keys |
-| [`docs/catalog.md`](docs/catalog.md) | The store protocol and publishing |
-| [`docs/security.md`](docs/security.md) | Trust model — read before shipping |
-| [`examples/`](examples) | Working examples, from trivial to a full plugin |
-| [`sdk/api/`](sdk/api) | Reference copies of the host contracts |
+| [platform/protocol](platform/protocol) | Public protocol, SDK facade and declarative UI contracts |
+| [platform/runtime](platform/runtime) | CoreRuntime and JVM fake-host utilities |
+| [examples/sdk3](examples/sdk3) | Eight CLI author projects with dev configs and console commands |
+| [examples/independent-plugin](examples/independent-plugin) | Independent low-level protocol plugin using Maven artifacts |
+| [examples/open-contract](examples/open-contract) | External contract/provider example |
+| [tools/amalia](tools/amalia) | `create`, `add`, `validate`, `package`, `test`, `dev` |
+| [tools/PackagePlatformPlugin.py](tools/PackagePlatformPlugin.py) | Lower-level single-DEX signed packager |
+| [docs/SDK_GUIDE_RU.md](docs/SDK_GUIDE_RU.md) | Detailed protocol/author guide (Russian) |
+| [docs/AI_PLUGIN_AUTHORING.md](docs/AI_PLUGIN_AUTHORING.md) | AI-assisted authoring guidance; follow actual source contracts |
+| [docs/plugin-platform](docs/plugin-platform) | Architecture, implementation and acceptance documents; distinguish plans from shipped behavior |
+| [.github/workflows/platform.yml](.github/workflows/platform.yml) | Standalone platform and CLI verification; not device acceptance |
 
----
+Weather provides bounded GET/forecast and notes implements save/read/delete.
+Music, reminders and screen use host facades; Telegram is a message draft, smart
+home is an intent, and local AI is an inference request intent. They are **not
+eight finished production integrations**.
 
-## Examples
+## Security and current boundaries
 
-| Example | Kind | Shows |
-|---|---|---|
-| [`theme-neon-glass`](examples/theme-neon-glass) | declarative | full theme: preview, ladder, motif, phrases |
-| [`phrases-localized`](examples/phrases-localized) | declarative | greetings in 9 languages, key fallback |
-| [`reminder-kotlin`](examples/reminder-kotlin) | code | a new ability: voice reminders (no UI, no permissions) |
-| [`command-kotlin`](examples/command-kotlin) | code | voice command handled before the model |
-| [`tool-kotlin`](examples/tool-kotlin) | code | a tool the model can call |
-| [`notification-kotlin`](examples/notification-kotlin) | code | notifications with buttons + background state |
-| [`store-catalog.json`](examples/store-catalog.json) | data | a minimal catalog for the store |
+- Packages use P-256 signatures and pinned publisher trust. **In-process DEX is
+  trusted code**, with no CPU/RAM/security isolation. Signing is not a sandbox.
+- Network is bounded GET to exact reviewed HTTPS domains on port 443, without
+  redirects or automatic retries. No general POST/OAuth connector is provided.
+- Storage is bounded package data/settings; plain storage is not SecretStore.
+  Android encrypted secrets are a separate host facade.
+- Android adapters include media, notices, secrets, short background work,
+  scheduler, browser/device subset and host-rendered `UiDocument`, not arbitrary
+  Compose binary UI or WebView.
+- Media supports bounded direct audio, not video/HLS/live streaming/DRM.
+  Scheduler deliveries require a live generation; process-death recovery is not
+  implemented. There is no arbitrary long-running plugin foreground job.
+- Static `validate`, a successful JAR/DEX build and fake-host runs do not prove
+  device installation, safety or Android acceptance. Consult
+  [SDK3_STATUS.md](docs/SDK3_STATUS.md) for implementation boundaries and remaining
+  CI/device checks; API presence alone is not proof of a working integration.
 
----
+## Archive
 
-## Get a ready-to-install plugin package
-
-You do not have to build anything to try this. The *Build plugin package*
-workflow compiles a code example and publishes the finished `.amaliaplug`:
-
-1. **Actions → Build plugin package → Run workflow** (default example:
-   `reminder-kotlin`).
-2. Download the artifact — or grab it from the **`plugins-latest`** release.
-3. In Amalia: **Settings → Plugins → Install from file**.
-
----
-
-## Language support
-
-Amalia ships in nine locales: Russian (default), English, Japanese, German,
-Spanish, French, Chinese, Hindi, Arabic.
-
-A plugin is **not required** to be translated — but phrases and any user-facing
-text should be. Keys are language tags, and `en-US` falls back to `en`.
-See **[docs/localization.md](docs/localization.md)**.
-
----
-
-## Install a plugin without the store
-
-Amalia understands a deep link, so you can share a plugin with a URL:
-
-```
-https://mirabel.tech/plugin?id=com.example.theme.sunset
-```
-
-The app opens, finds the entry in its catalog, and shows the same
-glass confirmation dialog as in the store.
-
----
-
-## Status and honest limitations
-
-We would rather you knew this up front:
-
-- **No published Gradle artifact yet.** The contracts currently live inside the
-  host app. [`sdk/api/`](sdk/api) holds reference copies you can compile against;
-  a standalone `:plugin-api` artifact is planned.
-- **Code plugins are trusted code.** There is no sandbox: a plugin runs in the
-  app process. Only install plugins whose author you trust.
-- **No package signing yet.** Integrity is verified by an optional `sha256`
-  checksum from the catalog, not by a signature.
-- **The visual layer is not open for drawing.** Plugins select from the host's
-  vector icon set (`iconName`) and may take over a home-screen *slot*, but they
-  do not get to paint freely — the "glass, light, air" design is the product.
-- **Background and audio contributions are executed**, but there is no built-in
-  plugin demonstrating them yet; a media player plugin is the intended reference.
-
----
+[Compatibility archive](docs/MIGRATION_V3.md) — only for porting existing plugins;
+not part of the new-plugin authoring context.
 
 ## License
 

@@ -1,0 +1,12 @@
+{
+  "grantStorage": true,
+  "grantInvoke": true,
+  "networkGrants": [
+    "archive.org"
+  ],
+  "storage": {},
+  "fixtures": [],
+  "featureGrants": [
+    "background.media"
+  ]
+}

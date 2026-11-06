@@ -1,4 +1,4 @@
-name: Validate plugins
+name: Validate legacy plugins
 
 on:
   push:

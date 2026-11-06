@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "id": "org.example.templates.detail-result",
+  "route": "org.example.templates.detail-result.home",
+  "titleKey": "title",
+  "placement": "screen",
+  "root": "root",
+  "nodes": [
+    {
+      "id": "root",
+      "component": "org.amalia.ui.stack",
+      "children": [
+        "summary",
+        "details",
+        "limit"
+      ]
+    },
+    {
+      "id": "summary",
+      "component": "org.amalia.ui.hero",
+      "properties": {
+        "titleKey": "summary",
+        "subtitleKey": "intro",
+        "surface": "plain"
+      }
+    },
+    {
+      "id": "details",
+      "component": "org.amalia.ui.section",
+      "properties": {
+        "titleKey": "details"
+      },
+      "children": [
+        "duration",
+        "rhythm"
+      ]
+    },
+    {
+      "id": "duration",
+      "component": "org.amalia.ui.item",
+      "properties": {
+        "titleKey": "duration",
+        "valueKey": "time",
+        "icon": "schedule"
+      }
+    },
+    {
+      "id": "rhythm",
+      "component": "org.amalia.ui.item",
+      "properties": {
+        "titleKey": "rhythm",
+        "valueKey": "weekdays",
+        "icon": "none"
+      }
+    },
+    {
+      "id": "limit",
+      "component": "org.amalia.ui.notice",
+      "properties": {
+        "titleKey": "sample",
+        "messageKey": "limit",
+        "tone": "neutral"
+      }
+    }
+  ],
+  "actions": [],
+  "sources": [],
+  "strings": {
+    "ru": {
+      "title": "Детали плана",
+      "summary": "Одна глава за вечер",
+      "intro": "Небольшой шаг для регулярного чтения.",
+      "details": "Ритм чтения",
+      "duration": "Время",
+      "time": "20 минут",
+      "rhythm": "Когда",
+      "weekdays": "По будням",
+      "sample": "Пример результата",
+      "limit": "Это статическая карточка плана, а не результат операции. План не запущен, расписание не создано."
+    },
+    "en": {
+      "title": "Plan details",
+      "summary": "One chapter each evening",
+      "intro": "A small step towards regular reading.",
+      "details": "Reading rhythm",
+      "duration": "Time",
+      "time": "20 minutes",
+      "rhythm": "When",
+      "weekdays": "Weekdays",
+      "sample": "Sample result",
+      "limit": "This is a static plan card, not an operation result. No plan has been started or schedule created."
+    },
+    "ja": {
+      "title": "プランの詳細",
+      "summary": "毎晩1章ずつ",
+      "intro": "読書を習慣にする小さな一歩。",
+      "details": "読書のリズム",
+      "duration": "時間",
+      "time": "20分",
+      "rhythm": "読む日",
+      "weekdays": "平日",
+      "sample": "結果の見本",
+      "limit": "これは静的なプランカードで、操作の結果ではありません。プランの開始や予定の作成は行われていません。"
+    },
+    "de": {
+      "title": "Plandetails",
+      "summary": "Jeden Abend ein Kapitel",
+      "intro": "Ein kleiner Schritt zum regelmäßigen Lesen.",
+      "details": "Leserhythmus",
+      "duration": "Zeit",
+      "time": "20 Minuten",
+      "rhythm": "Wann",
+      "weekdays": "An Werktagen",
+      "sample": "Beispielergebnis",
+      "limit": "Dies ist eine statische Plankarte, kein Operationsergebnis. Es wurde kein Plan gestartet und kein Zeitplan erstellt."
+    },
+    "es": {
+      "title": "Detalles del plan",
+      "summary": "Un capítulo cada noche",
+      "intro": "Un pequeño paso hacia la lectura habitual.",
+      "details": "Ritmo de lectura",
+      "duration": "Tiempo",
+      "time": "20 minutos",
+      "rhythm": "Cuándo",
+      "weekdays": "Entre semana",
+      "sample": "Resultado de ejemplo",
+      "limit": "Esta es una ficha estática del plan, no el resultado de una operación. No se ha iniciado ningún plan ni creado un horario."
+    },
+    "fr": {
+      "title": "Détails du programme",
+      "summary": "Un chapitre chaque soir",
+      "intro": "Un petit pas vers une lecture régulière.",
+      "details": "Rythme de lecture",
+      "duration": "Durée",
+      "time": "20 minutes",
+      "rhythm": "Quand",
+      "weekdays": "En semaine",
+      "sample": "Exemple de résultat",
+      "limit": "Cette fiche est statique, ce n’est pas le résultat d’une opération. Aucun programme n’a été lancé ni calendrier créé."
+    },
+    "zh": {
+      "title": "计划详情",
+      "summary": "每晚读一章",
+      "intro": "迈出规律阅读的一小步。",
+      "details": "阅读节奏",
+      "duration": "时长",
+      "time": "20 分钟",
+      "rhythm": "时间安排",
+      "weekdays": "工作日",
+      "sample": "结果示例",
+      "limit": "这是静态计划卡片，并非操作结果。尚未启动计划或创建日程。"
+    },
+    "hi": {
+      "title": "योजना का विवरण",
+      "summary": "हर शाम एक अध्याय",
+      "intro": "नियमित पढ़ने की ओर एक छोटा कदम।",
+      "details": "पढ़ने की लय",
+      "duration": "समय",
+      "time": "20 मिनट",
+      "rhythm": "कब",
+      "weekdays": "कार्यदिवसों में",
+      "sample": "परिणाम का उदाहरण",
+      "limit": "यह योजना का स्थिर कार्ड है, किसी क्रिया का परिणाम नहीं। कोई योजना शुरू नहीं हुई और कोई समय-सारणी नहीं बनी।"
+    },
+    "ar": {
+      "title": "تفاصيل الخطة",
+      "summary": "فصل واحد كل مساء",
+      "intro": "خطوة صغيرة نحو القراءة المنتظمة.",
+      "details": "وتيرة القراءة",
+      "duration": "المدة",
+      "time": "20 دقيقة",
+      "rhythm": "الموعد",
+      "weekdays": "أيام العمل",
+      "sample": "نتيجة توضيحية",
+      "limit": "هذه بطاقة خطة ثابتة وليست نتيجة عملية. لم تُبدأ خطة ولم يُنشأ جدول."
+    }
+  },
+  "states": {}
+}

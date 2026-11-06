@@ -1,0 +1,53 @@
+{
+  "id": "com.mirabel.scenario.price_watch",
+  "name": "Дозор скидки",
+  "version": "1.0.0",
+  "author": "mirabel",
+  "category": "scenario",
+  "description": "Раз в час смотрит цену в магазине и будит, когда та упадёт ниже 2000. Эталонный сценарий Мишки: работает неделями без единого вызова LLM.",
+  "minHostVersion": "3.0.0",
+  "entryPoint": null,
+  "scenarios": [
+    {
+      "id": "price_watch",
+      "title": "Дозор скидки",
+      "goal": "Сообщить, когда цена упадёт ниже 2000",
+      "capabilities": ["screen.automate", "system.launch_app", "notifications.post"],
+      "tree": {
+        "type": "sequence",
+        "children": [
+          { "type": "set", "var": "attempts", "value": "0" },
+          {
+            "type": "repeat",
+            "times": 50,
+            "children": [
+              { "type": "action", "tool": "open_app", "args": { "name": "Магазин" } },
+              { "type": "action", "tool": "read_screen", "args": {} },
+              {
+                "type": "selector",
+                "children": [
+                  {
+                    "type": "sequence",
+                    "children": [
+                      { "type": "condition", "check": "screen_contains", "value": "1 9" },
+                      { "type": "say", "text": "Цена упала ниже двух тысяч!" },
+                      { "type": "done", "outcome": "Скидка поймана" }
+                    ]
+                  },
+                  {
+                    "type": "sequence",
+                    "children": [
+                      { "type": "set", "var": "attempts", "value": "+1" },
+                      { "type": "sleep", "until": { "type": "poll", "intervalMs": 3600000 } }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          { "type": "fail", "reason": "50 проверок без скидки — сдаюсь" }
+        ]
+      }
+    }
+  ]
+}

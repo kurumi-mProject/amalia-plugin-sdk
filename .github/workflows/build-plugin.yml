@@ -1,4 +1,4 @@
-name: Build plugin package
+name: Build legacy plugin package
 
 # Собирает пример-плагин в готовый .amaliaplug: Kotlin → classes.dex → zip.
 # Артефакт можно скачать и установить в приложение («Плагины → Установить

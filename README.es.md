@@ -1,195 +1,43 @@
-# Amalia Plugin SDK
+# Amalia SDK3 — Guía breve
 
-**Amalia** es un asistente de voz para Android (Kotlin, Jetpack Compose). Su núcleo
-es deliberadamente pequeño: reconocimiento de voz, un modelo de lenguaje y una voz
-— eso es el producto. Todo lo demás es un **plugin**: temas, elección de motores,
-herramientas del dispositivo, comandos de voz, pantallas, notificaciones, funciones
-en segundo plano, frases de saludo y rasgos de carácter.
+SDK independiente de Kotlin/JVM para plugins del host Android de Amalia. SDK3 es una fachada de autor sobre el runtime de protocolo existente, no un nuevo cargador ni una versión estable de ABI 3.0.
 
-Este repositorio es el SDK: documentación, formato del paquete, contratos de
-extensión y ejemplos ejecutables.
+- `org.amalia.platform:amalia-protocol:0.2.0-SNAPSHOT`
+- `org.amalia.platform:amalia-runtime:0.2.0-SNAPSHOT`
 
-> **En otros idiomas:**
-> [English](README.md) · [Русский](README.ru.md) · [中文](README.zh.md) ·
-> [日本語](README.ja.md) · [Deutsch](README.de.md) · [Français](README.fr.md) ·
-> [हिन्दी](README.hi.md) · [العربية](README.ar.md)
+[English / README](README.md) · [SDK / CLI](docs/SDK_CLI.md) ·
+[SDK3_STATUS](docs/SDK3_STATUS.md) ·
+[SDK_GUIDE_RU](docs/SDK_GUIDE_RU.md)
 
----
+## Primeros pasos
 
-## Qué puede hacer un plugin
+Se requieren JDK 17, Gradle 9.7.1 y Python 3. Publicar las bibliotecas JVM y compilar JAR no requiere Android SDK ni código de la aplicación. El empaquetado DEX firmado necesita D8 de Android build-tools y OpenSSL.
 
-| Contribución | Interfaz | Ejemplo |
-|---|---|---|
-| Temas (fondo, acentos, escala circadiana) | `ThemeContributor` | [theme-neon-glass](examples/theme-neon-glass) |
-| Motores: reconocimiento, LLM, síntesis | `EngineContributor` | — |
-| Herramientas que el modelo puede llamar | `ToolContributor` | [tool-kotlin](examples/tool-kotlin) |
-| Frases de saludo | `PhraseContributor` | [phrases-localized](examples/phrases-localized) |
-| Bloques de carácter en el prompt | `PromptContributor` | — |
-| Declarar las capacidades necesarias | `CapabilityContributor` | [command-kotlin](examples/command-kotlin) |
-| Comandos gestionados **antes** del modelo | `CommandContributor` | [reminder-kotlin](examples/reminder-kotlin) |
-| Tu propia pantalla dentro de la app | `ScreenContributor` | [docs/extension-points.md](docs/extension-points.md) |
-| Notificaciones con botones | `NotificationContributor` | [notification-kotlin](examples/notification-kotlin) |
-| Estado en segundo plano (servicio en primer plano) | `BackgroundContributor` | [notification-kotlin](examples/notification-kotlin) |
-| Silenciar otro audio mientras Amalia habla | `AudioSessionContributor` | [docs/extension-points.md](docs/extension-points.md) |
-| Sustituir un elemento visual de la pantalla principal | `WidgetContributor` | [docs/extension-points.md](docs/extension-points.md) |
-
-Referencia completa: **[docs/extension-points.md](docs/extension-points.md)**
-
----
-
-## Dos tipos de plugins
-
-**1. Declarativo — sin código.** Solo un `plugin.json` con temas y frases. Cubre
-la mayoría de las peticiones de «que se vea distinto».
-
-**2. Plugin de código.** Un `plugin.json` más un `classes.dex` con una clase
-Kotlin/Java que implementa `AmaliaPlugin` y las contribuciones que necesite.
-
-Ambos se distribuyen como un único archivo **`.amaliaplug`** — un zip:
-
-```
-mi-plugin.amaliaplug
-├── plugin.json     ← obligatorio
-├── classes.dex     ← opcional (solo plugins de código)
-└── ...             ← tus propios recursos, los lees tú
-```
-
----
-
-## Inicio rápido — un tema en cinco minutos
-
-1. Crea `plugin.json`:
-
-```json
-{
-  "id": "com.example.theme.sunset",
-  "name": "Sunset",
-  "version": "1.0.0",
-  "author": "you",
-  "category": "theme",
-  "description": "Vidrio cálido al atardecer",
-  "iconName": "palette",
-  "minHostVersion": "2.0.0",
-  "themes": [
-    {
-      "id": "com.example.theme.sunset.dusk",
-      "name": "Sunset Dusk",
-      "staticDark": {
-        "name": "Sunset",
-        "stops": [
-          { "color": "#1A0F14", "position": 0.0 },
-          { "color": "#2A1418", "position": 0.55 },
-          { "color": "#120A0D", "position": 1.0 }
-        ],
-        "isDark": true,
-        "cct": 2600,
-        "auroras": ["#FF7A59", "#FF3D7F"],
-        "motif": "FIREFLY"
-      }
-    }
-  ],
-  "phrases": { "es": ["Atardecer activado."], "en": ["Sunset is on."] }
-}
-```
-
-2. Empaqueta (`plugin.json` debe estar en la **raíz** del archivo):
+Desde la raíz de este repositorio:
 
 ```bash
-cd mi-plugin
-zip -r ../sunset.amaliaplug plugin.json
+gradle -p platform \
+  :protocol:publishSdkPublicationToSdkDistributionRepository \
+  :runtime:publishSdkPublicationToSdkDistributionRepository
+export AMALIA_SDK_REPOSITORY="$PWD/platform/build/sdk-repository"
+./tools/amalia create plugin weather
+./tools/amalia add network weather --domain api.example.com
+./tools/amalia validate weather
+gradle -p weather jar -PamaliaSdkRepository="$AMALIA_SDK_REPOSITORY"
 ```
 
-3. En la app: **Ajustes → Plugins → Instalar desde archivo** y elige el
-   `.amaliaplug`. O súbelo a un servidor y publícalo en un catálogo
-   ([docs/catalog.md](docs/catalog.md)).
+El repositorio Maven local está en `platform/build/sdk-repository`; no se presupone un servidor Maven público ni `mavenLocal()`. Copia el directorio completo y usa una ruta absoluta. La CLI usa el wrapper del proyecto o `gradle` del PATH; los proyectos nuevos no incluyen wrapper.
 
-Guía completa: **[docs/quickstart.md](docs/quickstart.md)**
+## Siguientes pasos y límites
 
----
+La guía CLI describe `test`, `dev`, `package` y las opciones de firma. `amalia.json` es el único manifiesto de autor; `GeneratedManifest` y `platform.json` se generan. Declarar capacidades no concede permisos.
 
-## Mapa del repositorio
+[examples/sdk3](examples/sdk3/README.md) ·
+[platform/protocol](platform/protocol) · [platform/runtime](platform/runtime)
 
-| Ruta | Contenido |
-|---|---|
-| [`docs/quickstart.md`](docs/quickstart.md) | De cero a un plugin instalado |
-| [`docs/manifest.md`](docs/manifest.md) | Todos los campos de `plugin.json` |
-| [`docs/themes.md`](docs/themes.md) | Temas declarativos y paletas |
-| [`docs/packaging.md`](docs/packaging.md) | Compilar `classes.dex`, empaquetar, verificar |
-| [`docs/extension-points.md`](docs/extension-points.md) | Todas las interfaces de contribución |
-| [`docs/capabilities.md`](docs/capabilities.md) | Capacidades, accesos especiales, permisos |
-| [`docs/localization.md`](docs/localization.md) | Plugins multilingües |
-| [`docs/catalog.md`](docs/catalog.md) | Protocolo de la tienda y publicación |
-| [`docs/security.md`](docs/security.md) | Modelo de confianza — léelo antes de publicar |
-| [`examples/`](examples) | Ejemplos: de lo trivial a una función completa |
-| [`sdk/api/`](sdk/api) | Copias de referencia de los contratos del host |
-| [`tools/`](tools) | Validador y empaquetador |
+Los paquetes firmados con P-256 contienen `platform.json`, `package.sig`, `classes.dex`. La confianza en el editor, el consentimiento de activación y los permisos de invocación son pasos separados. Los plugins son código de confianza dentro del proceso del host, no un sandbox. JVM dev utiliza un host simulado y fixtures de red, no Android ni HTTP real.
 
----
+No hay recuperación tras la muerte del proceso, vídeo/HLS/streaming en vivo, OAuth ni ocho integraciones completas de producción. Telegram, hogar inteligente e IA local siguen siendo borradores o intenciones explícitas. Validar y compilar no demuestra funcionamiento en un dispositivo.
 
-## Ejemplos
 
-| Ejemplo | Tipo | Qué muestra |
-|---|---|---|
-| [`theme-neon-glass`](examples/theme-neon-glass) | declarativo | tema completo: vista previa, escala, motivo, frases |
-| [`phrases-localized`](examples/phrases-localized) | declarativo | saludos en nueve idiomas y respaldo por etiqueta |
-| [`reminder-kotlin`](examples/reminder-kotlin) | código | **una capacidad nueva**: recordatorios por voz, sin UI ni permisos |
-| [`command-kotlin`](examples/command-kotlin) | código | comando gestionado antes del modelo |
-| [`tool-kotlin`](examples/tool-kotlin) | código | una herramienta que el modelo puede llamar |
-| [`notification-kotlin`](examples/notification-kotlin) | código | notificación con botones + estado en segundo plano |
-| [`store-catalog.json`](examples/store-catalog.json) | datos | catálogo mínimo para la tienda |
-
-```bash
-# validar un manifiesto o un paquete ya construido
-python3 tools/validate.py examples/reminder-kotlin/plugin.json
-
-# empaquetar e imprimir la entrada del catálogo (con sha256 y tamaño)
-tools/pack.sh examples/reminder-kotlin
-```
-
----
-
-## Idiomas
-
-Amalia está disponible en nueve idiomas: ruso (por defecto), inglés, japonés,
-alemán, español, francés, chino, hindi y árabe.
-
-Un plugin **no está obligado** a traducirse, pero todo lo que lee el usuario
-debería estarlo. Las claves de `phrases` son etiquetas de idioma; `en-US` recurre
-a `en`. Ver **[docs/localization.md](docs/localization.md)**.
-
----
-
-## Instalar sin la tienda
-
-Amalia entiende enlaces directos, así que puedes compartir un plugin con una URL:
-
-```
-https://mirabel.tech/plugin?id=com.example.theme.sunset
-```
-
-La app se abre, encuentra la entrada en su catálogo y muestra el mismo diálogo de
-confirmación de cristal que en la tienda.
-
----
-
-## Estado y límites honestos
-
-- **Aún no hay artefacto de Gradle publicado.** Los contratos viven dentro de la
-  app; en [`sdk/api/`](sdk/api) hay copias de referencia contra las que compilar.
-  Un `:plugin-api` independiente está planeado.
-- **Un plugin de código es código de confianza.** No hay sandbox: se ejecuta en el
-  proceso de la app. Instala solo plugins de autores en los que confíes.
-- **Aún no hay firma de paquetes.** La integridad se comprueba con un `sha256`
-  opcional del catálogo, no con una firma.
-- **La capa visual no es libre.** Un plugin elige un icono del conjunto del host
-  (`iconName`) y puede ocupar un **hueco** de la pantalla principal, pero no
-  dibujar a su antojo: «cristal, luz, aire» es el producto.
-- **Hay cosas imposibles**: añadir recursos de texto propios, registrar un
-  `BroadcastReceiver` en el manifiesto o pedir alarmas exactas. Cada ejemplo
-  explica con qué se sustituyen.
-
----
-
-## Licencia
-
-MIT — ver [LICENSE](LICENSE).
+[MIT — LICENSE](LICENSE)

@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "id": "org.example.preferences.screen",
+  "route": "org.example.preferences.home",
+  "titleKey": "title",
+  "root": "root",
+  "nodes": [
+    {
+      "id": "root",
+      "component": "org.amalia.ui.stack",
+      "children": [
+        "hero",
+        "session",
+        "sound"
+      ]
+    },
+    {
+      "id": "hero",
+      "component": "org.amalia.ui.hero",
+      "properties": {
+        "titleKey": "hero",
+        "subtitleKey": "intro",
+        "surface": "plain"
+      }
+    },
+    {
+      "id": "session",
+      "component": "org.amalia.ui.section",
+      "properties": {
+        "titleKey": "session"
+      },
+      "children": [
+        "remind",
+        "duration"
+      ]
+    },
+    {
+      "id": "remind",
+      "component": "org.amalia.ui.toggle",
+      "labelKey": "remind",
+      "value": {
+        "source": "LITERAL",
+        "literal": true
+      },
+      "properties": {
+        "subtitleKey": "remind_hint"
+      }
+    },
+    {
+      "id": "duration",
+      "component": "org.amalia.ui.slider",
+      "labelKey": "duration",
+      "value": {
+        "source": "LITERAL",
+        "literal": 25
+      },
+      "properties": {
+        "min": 5,
+        "max": 60,
+        "step": 5,
+        "unitKey": "unit"
+      }
+    },
+    {
+      "id": "sound",
+      "component": "org.amalia.ui.choices",
+      "labelKey": "sound",
+      "value": {
+        "source": "LITERAL",
+        "literal": "silence"
+      },
+      "properties": {
+        "options": [
+          {
+            "value": "silence",
+            "labelKey": "silence"
+          },
+          {
+            "value": "rain",
+            "labelKey": "rain"
+          },
+          {
+            "value": "forest",
+            "labelKey": "forest"
+          }
+        ]
+      }
+    }
+  ],
+  "strings": {
+    "ru": {
+      "title": "Режим фокуса",
+      "hero": "Меньше отвлечений",
+      "intro": "Выберите комфортный ритм для следующей сессии.",
+      "session": "Во время сессии",
+      "remind": "Напоминать о перерыве",
+      "remind_hint": "Мягкий сигнал по окончании",
+      "duration": "Длительность",
+      "unit": "мин",
+      "sound": "Звуковое сопровождение",
+      "silence": "Тишина",
+      "rain": "Дождь",
+      "forest": "Лес"
+    },
+    "en": {
+      "title": "Focus mode",
+      "hero": "Fewer distractions",
+      "intro": "Choose a comfortable rhythm for your next session.",
+      "session": "During the session",
+      "remind": "Remind me to pause",
+      "remind_hint": "A gentle signal at the end",
+      "duration": "Duration",
+      "unit": "min",
+      "sound": "Background sound",
+      "silence": "Silence",
+      "rain": "Rain",
+      "forest": "Forest"
+    },
+    "ja": {
+      "title": "集中モード",
+      "hero": "気が散らない時間",
+      "intro": "次のセッションに合うリズムを選びます。",
+      "session": "セッション中",
+      "remind": "休憩を知らせる",
+      "remind_hint": "終了時に穏やかな通知",
+      "duration": "長さ",
+      "unit": "分",
+      "sound": "環境音",
+      "silence": "無音",
+      "rain": "雨",
+      "forest": "森"
+    },
+    "de": {
+      "title": "Fokusmodus",
+      "hero": "Weniger Ablenkung",
+      "intro": "Wähle einen passenden Rhythmus für die nächste Sitzung.",
+      "session": "Während der Sitzung",
+      "remind": "An Pause erinnern",
+      "remind_hint": "Ein sanftes Signal am Ende",
+      "duration": "Dauer",
+      "unit": "Min.",
+      "sound": "Hintergrundklang",
+      "silence": "Stille",
+      "rain": "Regen",
+      "forest": "Wald"
+    },
+    "es": {
+      "title": "Modo de enfoque",
+      "hero": "Menos distracciones",
+      "intro": "Elige un ritmo cómodo para la próxima sesión.",
+      "session": "Durante la sesión",
+      "remind": "Recordar el descanso",
+      "remind_hint": "Una señal suave al terminar",
+      "duration": "Duración",
+      "unit": "min",
+      "sound": "Sonido de fondo",
+      "silence": "Silencio",
+      "rain": "Lluvia",
+      "forest": "Bosque"
+    },
+    "fr": {
+      "title": "Mode concentration",
+      "hero": "Moins de distractions",
+      "intro": "Choisissez un rythme agréable pour la prochaine séance.",
+      "session": "Pendant la séance",
+      "remind": "Rappeler la pause",
+      "remind_hint": "Un signal doux à la fin",
+      "duration": "Durée",
+      "unit": "min",
+      "sound": "Ambiance sonore",
+      "silence": "Silence",
+      "rain": "Pluie",
+      "forest": "Forêt"
+    },
+    "zh": {
+      "title": "专注模式",
+      "hero": "减少干扰",
+      "intro": "为下一次专注选择舒适的节奏。",
+      "session": "专注期间",
+      "remind": "提醒休息",
+      "remind_hint": "结束时轻声提醒",
+      "duration": "时长",
+      "unit": "分钟",
+      "sound": "背景声音",
+      "silence": "静音",
+      "rain": "雨声",
+      "forest": "森林"
+    },
+    "hi": {
+      "title": "फ़ोकस मोड",
+      "hero": "कम ध्यान भटकाव",
+      "intro": "अगले सत्र के लिए आरामदायक लय चुनें।",
+      "session": "सत्र के दौरान",
+      "remind": "विराम की याद दिलाएँ",
+      "remind_hint": "अंत में हल्का संकेत",
+      "duration": "अवधि",
+      "unit": "मिनट",
+      "sound": "पृष्ठभूमि ध्वनि",
+      "silence": "शांति",
+      "rain": "बारिश",
+      "forest": "जंगल"
+    },
+    "ar": {
+      "title": "وضع التركيز",
+      "hero": "تشتيت أقل",
+      "intro": "اختر إيقاعًا مريحًا للجلسة التالية.",
+      "session": "أثناء الجلسة",
+      "remind": "ذكّرني بالاستراحة",
+      "remind_hint": "إشارة لطيفة عند الانتهاء",
+      "duration": "المدة",
+      "unit": "دقيقة",
+      "sound": "صوت الخلفية",
+      "silence": "صمت",
+      "rain": "مطر",
+      "forest": "غابة"
+    }
+  }
+}

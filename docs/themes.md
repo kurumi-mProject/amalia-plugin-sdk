@@ -1,3 +1,5 @@
+> **Legacy SDK (v2).** This document describes `plugin.json` / `com.my.amali` contracts, not the SDK3 author API. For new plugins start with [SDK_CLI.md](SDK_CLI.md), [SDK3_STATUS.md](SDK3_STATUS.md) and [migration](MIGRATION_V3.md).
+
 # Declarative themes
 
 A theme is a set of **palettes**. A palette is a vertical gradient, a few

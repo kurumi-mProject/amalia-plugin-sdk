@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "id": "org.example.sdk3.telegram",
+  "name": "telegram",
+  "version": "1.0.0",
+  "publisher": "org.example.sdk3",
+  "entryPoint": "org.example.sdk3.telegram.Plugin",
+  "capabilities": {}
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "org.example.sdk3.weather",
+  "name": "weather",
+  "version": "1.0.0",
+  "publisher": "org.example.sdk3",
+  "entryPoint": "org.example.sdk3.weather.Plugin",
+  "capabilities": {
+    "network": {
+      "domains": [
+        "api.open-meteo.com"
+      ]
+    }
+  }
+}

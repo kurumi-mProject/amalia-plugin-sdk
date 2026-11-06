@@ -1,0 +1,5 @@
+manifest
+permissions
+tools
+invoke prepare {"model": "local-summarizer", "prompt": "Summarize: the meeting starts at noon.", "max_tokens": "128"}
+quit

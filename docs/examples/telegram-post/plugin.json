@@ -1,0 +1,33 @@
+{
+  "id": "com.amalia.demo.telegram_post",
+  "name": "Вестник Telegram",
+  "version": "1.0.0",
+  "author": "amalia",
+  "category": "scenario",
+  "description": "Плейбук для Мишки: учит ИИ-цикл отправлять сообщения в Telegram по твоей формулировке — «в 18:00 напиши Оле: не забудь про завтрак». Время, контакт и текст даёшь ты; как нажимать — знает плейбук.",
+  "minHostVersion": "2.0.0",
+  "entryPoint": null,
+  "phrases": {
+    "ru": [
+      "Письмо долетит — я прослежу.",
+      "Скажи когда и кому — остальное я знаю."
+    ],
+    "en": [
+      "The message will arrive — I'll see it through.",
+      "Tell me when and to whom — I know the rest."
+    ]
+  },
+  "playbooks": [
+    {
+      "id": "telegram_message",
+      "title": "Сообщение в Telegram",
+      "trigger": "попросили написать или отправить сообщение в Telegram",
+      "params": [
+        { "name": "contact", "description": "Имя контакта, как в телефоне", "required": true },
+        { "name": "text", "description": "Текст сообщения", "required": true },
+        { "name": "time", "description": "Когда отправить («в 18:00», «через час»); пусто — сейчас", "required": false }
+      ],
+      "instructions": "1. Если в цели названо время («в 18:00», «через час»), вычисли epochMs от текущего времени и засни до него: sleep_until {\"type\":\"at\",\"epochMs\":...}. Без времени — действуй сразу.\n2. Открой Telegram: open_app(name=\"Telegram\") и поставь wait_ms 2000 — приложение грузится. Проверь по экрану, что виден список чатов или значок поиска. Не открылся — give_up: «Telegram не установлен или не запускается».\n3. Сначала поищи контакт прямо в списке чатов: имя contact (или его корень — «Фармил» для «Фармилы») уже может быть видно. Видно — сразу tap_on_text по имени и переходи к шагу 6, поиск не нужен. Не видно — открой поиск: tap_on_text(query=\"Search\"); если поиска нет, swipe(direction=\"down\") и читай снова.\n4. Введи контакт: type_text(text=contact) и wait_ms 800. Проверь, что в результатах появилось имя contact (совпадения по корню достаточно). Не появилось — give_up: «контакт не найден».\n5. Открой чат: tap_on_text(query=contact) и wait_ms 800. Проверь, что сверху экрана стоит имя contact, — это подтверждение, что чат тот. Не то имя — вернись назад (back) и сдайся честно.\n6. Тапни поле ввода: tap_on_text(query=\"Message\"). Введи текст: type_text(text=text).\n7. Проверь по экрану, что text стоит в поле ввода. Только после этого отправляй: tap_on_text(query=\"Send\").\n8. Прочитай экран ещё раз: сообщение с text должно быть видно в чате последним. Видно — done: «Написал contact: text». Не видно — give_up с тем, что реально на экране."
+    }
+  ]
+}

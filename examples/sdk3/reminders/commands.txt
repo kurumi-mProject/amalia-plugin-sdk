@@ -1,0 +1,6 @@
+manifest
+permissions
+tools
+invoke prepare {"text": "Stretch", "at": "2030-01-01T12:00:00Z"}
+invoke pending {}
+quit

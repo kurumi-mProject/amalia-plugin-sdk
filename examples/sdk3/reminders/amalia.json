@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "org.example.sdk3.reminders",
+  "name": "reminders",
+  "version": "1.0.0",
+  "publisher": "org.example.sdk3",
+  "entryPoint": "org.example.sdk3.reminders.Plugin",
+  "capabilities": {
+    "background": {},
+    "notifications": {}
+  }
+}

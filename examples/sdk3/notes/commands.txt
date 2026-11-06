@@ -1,0 +1,6 @@
+manifest
+permissions
+tools
+invoke save {"name": "shopping", "text": "Buy milk"}
+invoke read {"name": "shopping"}
+quit

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "org.example.sdk3.music",
+  "name": "music",
+  "version": "1.0.0",
+  "publisher": "org.example.sdk3",
+  "entryPoint": "org.example.sdk3.music.Plugin",
+  "capabilities": {
+    "media": {},
+    "background": {},
+    "network": {
+      "domains": [
+        "archive.org"
+      ]
+    }
+  }
+}

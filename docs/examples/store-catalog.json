@@ -1,0 +1,15 @@
+{
+  "items": [
+    {
+      "id": "com.mirabel.theme.neon",
+      "name": "Neon Glass",
+      "version": "1.0.0",
+      "author": "mirabel",
+      "category": "theme",
+      "description": "Неоновая ночь: маджента и ультрафиолет",
+      "downloadUrl": "https://example.com/plugins/neon-glass.amaliaplug",
+      "sha256": "",
+      "sizeBytes": 3072
+    }
+  ]
+}

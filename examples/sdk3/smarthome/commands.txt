@@ -1,0 +1,5 @@
+manifest
+permissions
+tools
+invoke light {"room": "study", "brightness": "40"}
+quit

@@ -1,3 +1,5 @@
+> **Legacy SDK (v2).** This document describes `plugin.json` / `com.my.amali` contracts, not the SDK3 author API. For new plugins start with [SDK_CLI.md](SDK_CLI.md), [SDK3_STATUS.md](SDK3_STATUS.md) and [migration](MIGRATION_V3.md).
+
 # Capabilities, special accesses and permissions
 
 A plugin must be honest about what it needs. Declaring a capability does **not**

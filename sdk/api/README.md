@@ -1,64 +1,49 @@
-# `sdk/api` — reference copies of the host contracts
+# `sdk/api` — LEGACY reference contracts
 
-These files are **verbatim copies** of the plugin-facing contracts that live in
-the Amalia host app:
+> **Not the SDK3 API.** This directory is retained for compatibility with existing
+> `plugin.json` / Contributor plugins. New projects should start with the
+> [SDK3 quick start](../../README.md), [CLI guide](../../docs/SDK_CLI.md) and
+> [migration guide](../../docs/MIGRATION_V3.md).
 
-| File | Contains |
+The current independent API is in
+[`platform/protocol/src/main/kotlin/org/amalia/platform/protocol`](../../platform/protocol/src/main/kotlin/org/amalia/platform/protocol),
+with the author facade in its `sdk` package. Its current Maven coordinate is
+`org.amalia.platform:amalia-protocol:0.2.0-SNAPSHOT`, published to a local
+Maven repository from this checkout. No stable SDK 3.0 Maven release or public
+Maven service is implied. Do not copy these legacy files into an SDK3 project.
+
+## What remains here
+
+| File | Legacy contents |
 |---|---|
 | `AmaliaPlugin.kt` | `AmaliaPlugin`, `PluginContext`, `HostServices` |
-| `PluginMetadata.kt` | `PluginMetadata` (`id`, `name`, `version`, `iconName`, …) |
-| `PluginCategory.kt` | `PluginCategory` enum |
-| `ExtensionPoints.kt` | every contribution interface and its data types |
+| `PluginMetadata.kt` | Plugin identity, name, version and other legacy metadata |
+| `PluginCategory.kt` | Legacy category enum |
+| `ExtensionPoints.kt` | Contributor interfaces and their data types |
+| `minimal/` | Reduced non-Compose contracts for commands, notifications, background and capabilities |
 
-And a trimmed set for plugins that need **no UI**:
+These are reference copies of host contracts, not the independent protocol ABI.
+The matching legacy host source is authoritative. The reduced
+`minimal/Contributions.kt` is generated from `ExtensionPoints.kt` by
+`tools/extract-minimal-contracts.py`; Android-dependent types still require an
+appropriate `android.jar` and Kotlin dependencies. Full contribution interfaces
+can refer to host types not included in this directory.
 
-| File | Contains |
-|---|---|
-| `minimal/` | `AmaliaPlugin`, `PluginMetadata`, `PluginCategory`, plus commands, notifications, background and capabilities — without Compose |
+Existing legacy projects may keep their source-set configuration or vendored
+copies while migrating. Do not bundle host-owned contract classes into plugin
+DEX: duplicate definitions cause loading/type-identity problems. Keeping this
+folder does not make its contracts interchangeable with the new protocol API.
 
-`minimal/Contributions.kt` is generated verbatim from `ExtensionPoints.kt` by
-`tools/extract-minimal-contracts.py`, so it cannot drift by hand. Use it when
-your plugin has no screens or widgets: it compiles with nothing but `android.jar`
-and the Kotlin stdlib, which means CI does not need an Android toolchain.
+## Which packaging tools to use
 
-## Why copies, and not a dependency
+- Legacy `plugin.json` examples: `tools/pack.sh` and `tools/validate.py` are retained
+  for that format.
+- SDK3 `amalia.json` author projects: use `tools/amalia validate|package`; output
+  is the signed `platform.json` + `package.sig` + `classes.dex` format.
+- Existing low-level protocol projects: see
+  [independent-plugin](../../examples/independent-plugin) and
+  `tools/PackagePlatformPlugin.py`.
 
-There is **no published Gradle artifact yet** — the contracts currently live
-inside the host application module. This folder exists so you can compile a
-plugin today instead of waiting for the `:plugin-api` artifact.
-
-How to use them:
-
-```kotlin
-// add the folder to your plugin project's source sets
-sourceSets["main"].kotlin.srcDir("../amalia-plugin-sdk/sdk/api")
-```
-
-…or simply copy the files into your project and keep them under version control
-until an artifact exists.
-
-## Important caveats
-
-- These are reference copies. The **authoritative** source is the host
-  application; if they ever disagree, the host wins.
-- `ExtensionPoints.kt` refers to a few host types that are *not* included here
-  (`AmaliaTool`, `EngineSlot`, `AmaliaThemeDefinition`, `PromptBuilder`
-  dependencies). You only need those for the contributions you actually
-  implement — a `CommandContributor` plugin, for example, compiles with just
-  these four files plus nothing else.
-- Do not bundle these classes inside your `classes.dex`. The host already has
-  them; bundling them causes duplicate-class and cast errors at load time.
-
-## Planned
-
-A standalone `:plugin-api` artifact (Maven / GitHub Packages) so that a plugin
-is a normal Gradle dependency:
-
-```kotlin
-dependencies {
-    compileOnly("tech.mirabel:amalia-plugin-api:2.0.0")
-}
-```
-
-When that lands, this folder becomes a changelog of the API surface rather than
-something you have to vendor.
+The formats share `.amaliaplug` but are not interchangeable. Signed SDK3 packages
+still execute trusted code in the host process, not in a sandbox. Consult the
+[status ledger](../../docs/SDK3_STATUS.md) for actual coverage and acceptance limits.

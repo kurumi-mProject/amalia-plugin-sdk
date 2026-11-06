@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "id": "org.example.sdk3.local-ai",
+  "name": "local-ai",
+  "version": "1.0.0",
+  "publisher": "org.example.sdk3",
+  "entryPoint": "org.example.sdk3.local_ai.Plugin",
+  "capabilities": {}
+}

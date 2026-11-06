@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "org.example.sdk3.screen",
+  "name": "screen",
+  "version": "1.0.0",
+  "publisher": "org.example.sdk3",
+  "entryPoint": "org.example.sdk3.screen.Plugin",
+  "capabilities": {
+    "screen": {}
+  }
+}

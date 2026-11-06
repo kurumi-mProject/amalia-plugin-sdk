@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "id": "org.example.templates.collection",
+  "route": "org.example.templates.collection.home",
+  "titleKey": "title",
+  "placement": "screen",
+  "root": "root",
+  "nodes": [
+    {
+      "id": "root",
+      "component": "org.amalia.ui.stack",
+      "children": [
+        "intro",
+        "plans",
+        "limit"
+      ]
+    },
+    {
+      "id": "intro",
+      "component": "org.amalia.ui.text",
+      "labelKey": "intro"
+    },
+    {
+      "id": "plans",
+      "component": "org.amalia.ui.list",
+      "value": {
+        "source": "LITERAL",
+        "literal": [
+          {
+            "minutes": 10
+          },
+          {
+            "minutes": 20
+          },
+          {
+            "minutes": 30
+          },
+          {
+            "minutes": 45
+          }
+        ]
+      },
+      "properties": {
+        "pageSize": 3,
+        "previousKey": "previous",
+        "nextKey": "next",
+        "summaryKey": "summary",
+        "emptyTitleKey": "empty",
+        "emptyDescriptionKey": "empty_hint"
+      },
+      "children": [
+        "row"
+      ]
+    },
+    {
+      "id": "row",
+      "component": "org.amalia.ui.item",
+      "labelKey": "reading",
+      "properties": {
+        "titleKey": "reading",
+        "subtitleKey": "unit_hint",
+        "valueBinding": {
+          "source": "ITEM",
+          "pointer": "/minutes"
+        }
+      }
+    },
+    {
+      "id": "limit",
+      "component": "org.amalia.ui.text",
+      "labelKey": "limit"
+    }
+  ],
+  "actions": [],
+  "sources": [],
+  "strings": {
+    "ru": {
+      "title": "Планы чтения",
+      "intro": "Подберите время для чтения.",
+      "reading": "Чтение",
+      "unit_hint": "Минут на одну сессию",
+      "previous": "Назад",
+      "next": "Далее",
+      "summary": "{from}–{to} из {total}",
+      "empty": "Планов пока нет",
+      "empty_hint": "Добавьте варианты в источник данных.",
+      "limit": "Пример коллекции. Выбор плана и поиск не подключены."
+    },
+    "en": {
+      "title": "Reading plans",
+      "intro": "Find time for reading.",
+      "reading": "Reading",
+      "unit_hint": "Minutes per session",
+      "previous": "Previous",
+      "next": "Next",
+      "summary": "{from}–{to} of {total}",
+      "empty": "No plans yet",
+      "empty_hint": "Add options to the data source.",
+      "limit": "Sample collection. Plan selection and search are not connected."
+    },
+    "ja": {
+      "title": "読書プラン",
+      "intro": "読書に使う時間を見つけましょう。",
+      "reading": "読書",
+      "unit_hint": "1回あたりの分数",
+      "previous": "前へ",
+      "next": "次へ",
+      "summary": "全{total}件中 {from}–{to}件",
+      "empty": "プランはまだありません",
+      "empty_hint": "データソースに候補を追加してください。",
+      "limit": "コレクションの見本です。プランの選択と検索は未接続です。"
+    },
+    "de": {
+      "title": "Lesepläne",
+      "intro": "Finde Zeit zum Lesen.",
+      "reading": "Lesen",
+      "unit_hint": "Minuten pro Sitzung",
+      "previous": "Zurück",
+      "next": "Weiter",
+      "summary": "{from}–{to} von {total}",
+      "empty": "Noch keine Pläne",
+      "empty_hint": "Füge der Datenquelle Optionen hinzu.",
+      "limit": "Beispielsammlung. Planauswahl und Suche sind nicht angebunden."
+    },
+    "es": {
+      "title": "Planes de lectura",
+      "intro": "Encuentra tiempo para leer.",
+      "reading": "Lectura",
+      "unit_hint": "Minutos por sesión",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "summary": "{from}–{to} de {total}",
+      "empty": "Aún no hay planes",
+      "empty_hint": "Añade opciones a la fuente de datos.",
+      "limit": "Colección de ejemplo. La selección y la búsqueda no están conectadas."
+    },
+    "fr": {
+      "title": "Programmes de lecture",
+      "intro": "Trouvez du temps pour lire.",
+      "reading": "Lecture",
+      "unit_hint": "Minutes par séance",
+      "previous": "Précédent",
+      "next": "Suivant",
+      "summary": "{from}–{to} sur {total}",
+      "empty": "Aucun programme pour le moment",
+      "empty_hint": "Ajoutez des options à la source de données.",
+      "limit": "Collection d’exemple. La sélection et la recherche ne sont pas connectées."
+    },
+    "zh": {
+      "title": "阅读计划",
+      "intro": "为阅读安排时间。",
+      "reading": "阅读",
+      "unit_hint": "每次阅读的分钟数",
+      "previous": "上一页",
+      "next": "下一页",
+      "summary": "第 {from}–{to} 项，共 {total} 项",
+      "empty": "暂无计划",
+      "empty_hint": "请向数据源添加选项。",
+      "limit": "示例集合。尚未连接计划选择和搜索功能。"
+    },
+    "hi": {
+      "title": "पढ़ने की योजनाएँ",
+      "intro": "पढ़ने के लिए समय चुनें।",
+      "reading": "पढ़ना",
+      "unit_hint": "हर सत्र के मिनट",
+      "previous": "पिछला",
+      "next": "अगला",
+      "summary": "{total} में से {from}–{to}",
+      "empty": "अभी कोई योजना नहीं",
+      "empty_hint": "डेटा स्रोत में विकल्प जोड़ें।",
+      "limit": "उदाहरण संग्रह। योजना चुनना और खोजना जुड़े नहीं हैं।"
+    },
+    "ar": {
+      "title": "خطط القراءة",
+      "intro": "اختر وقتًا للقراءة.",
+      "reading": "القراءة",
+      "unit_hint": "دقائق لكل جلسة",
+      "previous": "السابق",
+      "next": "التالي",
+      "summary": "{from}–{to} من {total}",
+      "empty": "لا توجد خطط بعد",
+      "empty_hint": "أضف خيارات إلى مصدر البيانات.",
+      "limit": "مجموعة توضيحية. اختيار الخطة والبحث غير موصولين."
+    }
+  },
+  "states": {}
+}

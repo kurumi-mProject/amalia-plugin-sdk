@@ -1,0 +1,11 @@
+# Activation journal
+
+`ActivationJournal(privateDirectory, stagedStore)` persists package selection independently of plugin code. The directory must already exist. One lifetime file lock excludes concurrent writers. All mutations use expected-revision CAS; attempts additionally use a monotonic package generation and random token. These generations are separate from the process-local CoreRuntime generations.
+
+`begin(packageId, stageId, expectedRevision)` re-verifies the staged archive with current pins and records STARTING before the loader runs. It rejects publisher takeover and unsigned replacement of an authenticated publisher. It does not authorize execution, grant access, migrate data or make the candidate active. An initial package remains disabled until confirmation. `confirm` re-verifies the archive and changes the active selection after the host's health probe. Reconfirming the same stage preserves its previous-version pointer. `fail` retains historical selection and marks the attempt failed. Reopening converts unfinished STARTING attempts to INTERRUPTED without running code.
+
+`disable` records intent; the host must withdraw runtime registrations separately. `rollback` requires an explicit data-compatibility assertion and current verification of the previous stage. It does not restore storage or undo external effects. No automatic live fallback is promised.
+
+Records are bounded binary documents with checksums, sequence and previous-record hash. Every transition validates replay invariants. Publication uses file fsync, atomic rename and directory fsync; unsupported filesystems fail. Failed publication poisons the instance because commit outcome may be ambiguous. Close and reopen to inspect committed history. Uncommitted temporary records are discarded. History is append-only and bounded; compaction is not implemented. Checksums detect corruption, not malicious rewriting or deletion of a whole trailing suffix. Keep private storage inaccessible to other writers.
+
+Historical stage references are metadata, not executable handles. The staged archive/content must remain private and immutable; re-verification checks the archive, not arbitrary changes to an extracted directory. The host must not execute mutable content merely because the journal names it.

@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "id": "org.example.templates.form",
+  "route": "org.example.templates.form.home",
+  "titleKey": "title",
+  "placement": "screen",
+  "root": "root",
+  "nodes": [
+    {
+      "id": "root",
+      "component": "org.amalia.ui.stack",
+      "children": [
+        "intro",
+        "editor",
+        "limit"
+      ]
+    },
+    {
+      "id": "intro",
+      "component": "org.amalia.ui.text",
+      "labelKey": "intro"
+    },
+    {
+      "id": "editor",
+      "component": "org.amalia.ui.section",
+      "properties": {
+        "titleKey": "draft"
+      },
+      "children": [
+        "name",
+        "body"
+      ]
+    },
+    {
+      "id": "name",
+      "component": "org.amalia.ui.input",
+      "labelKey": "name"
+    },
+    {
+      "id": "body",
+      "component": "org.amalia.ui.input",
+      "labelKey": "body"
+    },
+    {
+      "id": "limit",
+      "component": "org.amalia.ui.notice",
+      "properties": {
+        "titleKey": "local",
+        "messageKey": "limit",
+        "tone": "neutral"
+      }
+    }
+  ],
+  "actions": [],
+  "sources": [],
+  "strings": {
+    "ru": {
+      "title": "Заметка о книге",
+      "intro": "Сформулируйте одну мысль из прочитанного.",
+      "draft": "Черновик",
+      "name": "Заголовок",
+      "body": "Мысль",
+      "local": "Только в этой сессии",
+      "limit": "Форма показывает ввод текста. Отправка и сохранение не подключены; после закрытия черновик не сохраняется."
+    },
+    "en": {
+      "title": "Book note",
+      "intro": "Write down one thought from your reading.",
+      "draft": "Draft",
+      "name": "Title",
+      "body": "Thought",
+      "local": "Only in this session",
+      "limit": "This form demonstrates text entry. Submission and saving are not connected; the draft is not retained after closing."
+    },
+    "ja": {
+      "title": "本のメモ",
+      "intro": "読んで感じたことを一つ書きましょう。",
+      "draft": "下書き",
+      "name": "タイトル",
+      "body": "感想",
+      "local": "このセッションのみ",
+      "limit": "文字入力の見本です。送信と保存は未接続で、閉じると下書きは残りません。"
+    },
+    "de": {
+      "title": "Buchnotiz",
+      "intro": "Halte einen Gedanken aus deiner Lektüre fest.",
+      "draft": "Entwurf",
+      "name": "Titel",
+      "body": "Gedanke",
+      "local": "Nur in dieser Sitzung",
+      "limit": "Dieses Formular zeigt die Texteingabe. Absenden und Speichern sind nicht angebunden; nach dem Schließen bleibt der Entwurf nicht erhalten."
+    },
+    "es": {
+      "title": "Nota sobre un libro",
+      "intro": "Escribe una idea de tu lectura.",
+      "draft": "Borrador",
+      "name": "Título",
+      "body": "Idea",
+      "local": "Solo en esta sesión",
+      "limit": "Este formulario muestra la entrada de texto. El envío y el guardado no están conectados; el borrador no se conserva al cerrar."
+    },
+    "fr": {
+      "title": "Note de lecture",
+      "intro": "Notez une idée tirée de votre lecture.",
+      "draft": "Brouillon",
+      "name": "Titre",
+      "body": "Idée",
+      "local": "Uniquement dans cette session",
+      "limit": "Ce formulaire illustre la saisie de texte. L’envoi et l’enregistrement ne sont pas connectés ; le brouillon disparaît à la fermeture."
+    },
+    "zh": {
+      "title": "读书笔记",
+      "intro": "记录阅读中的一个想法。",
+      "draft": "草稿",
+      "name": "标题",
+      "body": "想法",
+      "local": "仅限本次会话",
+      "limit": "此表单演示文本输入。尚未连接提交和保存功能；关闭后不会保留草稿。"
+    },
+    "hi": {
+      "title": "पुस्तक पर नोट",
+      "intro": "पढ़ी हुई बातों में से एक विचार लिखें।",
+      "draft": "मसौदा",
+      "name": "शीर्षक",
+      "body": "विचार",
+      "local": "केवल इस सत्र में",
+      "limit": "यह फ़ॉर्म पाठ लिखने का उदाहरण है। भेजना और सहेजना जुड़े नहीं हैं; बंद करने के बाद मसौदा नहीं रहता।"
+    },
+    "ar": {
+      "title": "ملاحظة عن كتاب",
+      "intro": "دوّن فكرة واحدة مما قرأت.",
+      "draft": "مسودة",
+      "name": "العنوان",
+      "body": "الفكرة",
+      "local": "في هذه الجلسة فقط",
+      "limit": "يوضّح هذا النموذج إدخال النص. الإرسال والحفظ غير موصولين؛ لا تُحتفظ بالمسودة بعد الإغلاق."
+    }
+  },
+  "states": {}
+}

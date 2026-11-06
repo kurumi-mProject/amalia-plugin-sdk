@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "id": "org.example.templates.controls",
+  "route": "org.example.templates.controls.home",
+  "titleKey": "title",
+  "placement": "screen",
+  "root": "root",
+  "nodes": [
+    {
+      "id": "root",
+      "component": "org.amalia.ui.stack",
+      "children": [
+        "intro",
+        "panel",
+        "limit"
+      ]
+    },
+    {
+      "id": "intro",
+      "component": "org.amalia.ui.text",
+      "labelKey": "intro"
+    },
+    {
+      "id": "panel",
+      "component": "org.amalia.ui.section",
+      "properties": {
+        "titleKey": "increments"
+      },
+      "children": [
+        "buttons"
+      ]
+    },
+    {
+      "id": "buttons",
+      "component": "org.amalia.ui.actions",
+      "children": [
+        "one",
+        "five",
+        "ten"
+      ]
+    },
+    {
+      "id": "one",
+      "component": "org.amalia.ui.button",
+      "labelKey": "one",
+      "actionId": "advance1",
+      "properties": {
+        "variant": "primary",
+        "icon": "bolt",
+        "enabled": true
+      }
+    },
+    {
+      "id": "five",
+      "component": "org.amalia.ui.button",
+      "labelKey": "five",
+      "actionId": "advance5",
+      "properties": {
+        "variant": "secondary",
+        "enabled": true
+      }
+    },
+    {
+      "id": "ten",
+      "component": "org.amalia.ui.button",
+      "labelKey": "ten",
+      "actionId": "advance10",
+      "properties": {
+        "variant": "quiet",
+        "enabled": true
+      }
+    },
+    {
+      "id": "limit",
+      "component": "org.amalia.ui.notice",
+      "properties": {
+        "titleKey": "demo",
+        "messageKey": "limit",
+        "tone": "neutral",
+        "icon": "info"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "advance1",
+      "providerId": "org.example.implementation.counter",
+      "contractId": "org.example.counter.counter",
+      "contractVersion": {
+        "major": 1
+      },
+      "operationId": "advance",
+      "input": {
+        "amount": {
+          "source": "LITERAL",
+          "literal": 1
+        }
+      }
+    },
+    {
+      "id": "advance5",
+      "providerId": "org.example.implementation.counter",
+      "contractId": "org.example.counter.counter",
+      "contractVersion": {
+        "major": 1
+      },
+      "operationId": "advance",
+      "input": {
+        "amount": {
+          "source": "LITERAL",
+          "literal": 5
+        }
+      }
+    },
+    {
+      "id": "advance10",
+      "providerId": "org.example.implementation.counter",
+      "contractId": "org.example.counter.counter",
+      "contractVersion": {
+        "major": 1
+      },
+      "operationId": "advance",
+      "input": {
+        "amount": {
+          "source": "LITERAL",
+          "literal": 10
+        }
+      }
+    }
+  ],
+  "sources": [],
+  "strings": {
+    "ru": {
+      "title": "Пульт счётчика",
+      "intro": "Каждое нажатие увеличивает демонстрационный счётчик.",
+      "increments": "Добавить к счётчику",
+      "one": "Добавить 1",
+      "five": "Добавить 5",
+      "ten": "Добавить 10",
+      "demo": "Нужен демостенд",
+      "limit": "В preview кнопки отключены. Для вызова нужен подключённый demo-provider и права хоста. Текущее значение здесь не отображается."
+    },
+    "en": {
+      "title": "Counter controls",
+      "intro": "Each press increments the demo counter.",
+      "increments": "Add to counter",
+      "one": "Add 1",
+      "five": "Add 5",
+      "ten": "Add 10",
+      "demo": "Demo setup required",
+      "limit": "Buttons are disabled in preview. Invocations require a connected demo provider and host grants. The current value is not displayed here."
+    },
+    "ja": {
+      "title": "カウンター操作",
+      "intro": "押すたびにデモ用カウンターが増えます。",
+      "increments": "カウンターに加算",
+      "one": "1を加算",
+      "five": "5を加算",
+      "ten": "10を加算",
+      "demo": "デモ環境が必要です",
+      "limit": "プレビューではボタンは無効です。呼び出しにはデモプロバイダーの接続とホストによる権限付与が必要です。現在値はここには表示されません。"
+    },
+    "de": {
+      "title": "Zählersteuerung",
+      "intro": "Jeder Tastendruck erhöht den Demo-Zähler.",
+      "increments": "Zum Zähler addieren",
+      "one": "1 addieren",
+      "five": "5 addieren",
+      "ten": "10 addieren",
+      "demo": "Demo-Umgebung erforderlich",
+      "limit": "In der Vorschau sind die Tasten deaktiviert. Aufrufe benötigen einen verbundenen Demo-Provider und Host-Berechtigungen. Der aktuelle Wert wird hier nicht angezeigt."
+    },
+    "es": {
+      "title": "Controles del contador",
+      "intro": "Cada pulsación incrementa el contador de demostración.",
+      "increments": "Añadir al contador",
+      "one": "Añadir 1",
+      "five": "Añadir 5",
+      "ten": "Añadir 10",
+      "demo": "Se necesita un entorno de demostración",
+      "limit": "Los botones están desactivados en la vista previa. Las llamadas requieren un proveedor de demostración conectado y permisos del host. El valor actual no se muestra aquí."
+    },
+    "fr": {
+      "title": "Commandes du compteur",
+      "intro": "Chaque appui incrémente le compteur de démonstration.",
+      "increments": "Ajouter au compteur",
+      "one": "Ajouter 1",
+      "five": "Ajouter 5",
+      "ten": "Ajouter 10",
+      "demo": "Environnement de démonstration requis",
+      "limit": "Les boutons sont désactivés dans l’aperçu. Les appels nécessitent un fournisseur de démonstration connecté et des autorisations de l’hôte. La valeur actuelle n’est pas affichée ici."
+    },
+    "zh": {
+      "title": "计数器控制",
+      "intro": "每次点击都会增加演示计数器的数值。",
+      "increments": "增加计数",
+      "one": "加 1",
+      "five": "加 5",
+      "ten": "加 10",
+      "demo": "需要演示环境",
+      "limit": "预览中的按钮已禁用。调用需要连接演示提供程序并由宿主授予权限。此处不显示当前值。"
+    },
+    "hi": {
+      "title": "काउंटर नियंत्रण",
+      "intro": "हर बार दबाने पर डेमो काउंटर बढ़ता है।",
+      "increments": "काउंटर में जोड़ें",
+      "one": "1 जोड़ें",
+      "five": "5 जोड़ें",
+      "ten": "10 जोड़ें",
+      "demo": "डेमो परिवेश चाहिए",
+      "limit": "पूर्वावलोकन में बटन बंद हैं। कॉल के लिए जुड़ा हुआ डेमो प्रदाता और होस्ट की अनुमतियाँ चाहिए। वर्तमान मान यहाँ नहीं दिखता।"
+    },
+    "ar": {
+      "title": "التحكم بالعدّاد",
+      "intro": "كل ضغطة تزيد قيمة عدّاد العرض التجريبي.",
+      "increments": "إضافة إلى العدّاد",
+      "one": "أضف 1",
+      "five": "أضف 5",
+      "ten": "أضف 10",
+      "demo": "يلزم إعداد تجريبي",
+      "limit": "الأزرار معطلة في المعاينة. تتطلب الاستدعاءات موفّرًا تجريبيًا موصولًا وصلاحيات من المضيف. لا تُعرض القيمة الحالية هنا."
+    }
+  },
+  "states": {}
+}

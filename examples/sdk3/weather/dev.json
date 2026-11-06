@@ -1,0 +1,15 @@
+{
+  "grantStorage": false,
+  "grantInvoke": true,
+  "networkGrants": [
+    "api.open-meteo.com"
+  ],
+  "storage": {},
+  "fixtures": [
+    {
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m",
+      "status": 200,
+      "body": "{\"current\": {\"time\": \"2030-01-01T12:00\", \"temperature_2m\": 12.5}, \"current_units\": {\"temperature_2m\": \"\\u00b0C\"}}"
+    }
+  ]
+}

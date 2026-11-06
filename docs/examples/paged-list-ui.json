@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "id": "org.example.counter.ui.screen",
+  "route": "org.example.counter.ui.home",
+  "titleKey": "title",
+  "placement": "screen",
+  "root": "root",
+  "nodes": [
+    {
+      "id": "root",
+      "component": "org.amalia.ui.stack",
+      "children": [
+        "heading",
+        "increments"
+      ]
+    },
+    {
+      "id": "heading",
+      "component": "org.amalia.ui.heading",
+      "labelKey": "choose"
+    },
+    {
+      "id": "increments",
+      "component": "org.amalia.ui.list",
+      "value": {
+        "source": "LITERAL",
+        "literal": [
+          {
+            "amount": 1
+          },
+          {
+            "amount": 2
+          },
+          {
+            "amount": 3
+          },
+          {
+            "amount": 4
+          },
+          {
+            "amount": 5
+          },
+          {
+            "amount": 6
+          },
+          {
+            "amount": 7
+          },
+          {
+            "amount": 8
+          },
+          {
+            "amount": 9
+          },
+          {
+            "amount": 10
+          }
+        ]
+      },
+      "properties": {
+        "pageSize": 4,
+        "previousKey": "previous",
+        "nextKey": "next",
+        "summaryKey": "summary",
+        "emptyTitleKey": "empty"
+      },
+      "children": [
+        "row"
+      ]
+    },
+    {
+      "id": "row",
+      "component": "org.amalia.ui.item",
+      "labelKey": "add",
+      "actionId": "advance",
+      "properties": {
+        "titleKey": "add",
+        "valueBinding": {
+          "source": "ITEM",
+          "pointer": "/amount"
+        },
+        "icon": "bolt"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "advance",
+      "providerId": "org.example.implementation.counter",
+      "contractId": "org.example.counter.counter",
+      "contractVersion": {
+        "major": 1
+      },
+      "operationId": "advance",
+      "input": {
+        "amount": {
+          "source": "ITEM",
+          "pointer": "/amount"
+        }
+      }
+    }
+  ],
+  "strings": {
+    "ru": {
+      "title": "Счётчик",
+      "choose": "Выберите приращение",
+      "add": "Добавить выбранное число",
+      "previous": "Назад",
+      "next": "Далее",
+      "summary": "{from}–{to} из {total}",
+      "empty": "Нет вариантов"
+    },
+    "en": {
+      "title": "Counter",
+      "choose": "Choose an increment",
+      "add": "Add the selected amount",
+      "previous": "Previous",
+      "next": "Next",
+      "summary": "{from}–{to} of {total}",
+      "empty": "No options"
+    },
+    "ja": {
+      "title": "カウンター",
+      "choose": "増分を選択",
+      "add": "選択した数を加算",
+      "previous": "前へ",
+      "next": "次へ",
+      "summary": "{total}件中 {from}–{to}",
+      "empty": "選択肢がありません"
+    },
+    "de": {
+      "title": "Zähler",
+      "choose": "Schritt wählen",
+      "add": "Gewählte Zahl addieren",
+      "previous": "Zurück",
+      "next": "Weiter",
+      "summary": "{from}–{to} von {total}",
+      "empty": "Keine Optionen"
+    },
+    "es": {
+      "title": "Contador",
+      "choose": "Elige un incremento",
+      "add": "Añadir la cantidad elegida",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "summary": "{from}–{to} de {total}",
+      "empty": "Sin opciones"
+    },
+    "fr": {
+      "title": "Compteur",
+      "choose": "Choisissez un incrément",
+      "add": "Ajouter la valeur choisie",
+      "previous": "Précédent",
+      "next": "Suivant",
+      "summary": "{from}–{to} sur {total}",
+      "empty": "Aucune option"
+    },
+    "zh": {
+      "title": "计数器",
+      "choose": "选择增量",
+      "add": "添加所选数值",
+      "previous": "上一页",
+      "next": "下一页",
+      "summary": "第 {from}–{to} 项，共 {total} 项",
+      "empty": "暂无选项"
+    },
+    "hi": {
+      "title": "काउंटर",
+      "choose": "वृद्धि चुनें",
+      "add": "चुनी हुई संख्या जोड़ें",
+      "previous": "पिछला",
+      "next": "अगला",
+      "summary": "{total} में से {from}–{to}",
+      "empty": "कोई विकल्प नहीं"
+    },
+    "ar": {
+      "title": "العدّاد",
+      "choose": "اختر مقدار الزيادة",
+      "add": "أضف العدد المختار",
+      "previous": "السابق",
+      "next": "التالي",
+      "summary": "{from}–{to} من {total}",
+      "empty": "لا توجد خيارات"
+    }
+  }
+}
