@@ -17,7 +17,7 @@ dependencies {
 // The legacy loader receives one DEX and does not resolve Maven dependencies.
 // Make a self-contained jar while keeping host contracts/platform classes out.
 tasks.named<Jar>("jar") {
-    archiveBaseName.set("youtube-music-plugin")
+    archiveBaseName.set("plugin")
     archiveVersion.set("")
     archiveClassifier.set("")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE

@@ -13,7 +13,7 @@ cd "$ROOT"
 "$GRADLE_BIN" --no-daemon -PandroidApi="$ANDROID_API" :plugin:jar
 mkdir -p dist/dex
 rm -f dist/dex/classes*.dex
-"$D8" --min-api 26 --lib "$ANDROID_JAR" --output dist/dex plugin/build/libs/youtube-music-plugin.jar
+"$D8" --min-api 26 --lib "$ANDROID_JAR" --output dist/dex plugin/build/libs/plugin.jar
 cp plugin.json dist/dex/plugin.json
 (cd dist/dex && zip -q -j ../youtube-music.amaliaplug plugin.json classes*.dex)
 unzip -t dist/youtube-music.amaliaplug >/dev/null
