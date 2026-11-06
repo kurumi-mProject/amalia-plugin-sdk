@@ -7,12 +7,11 @@ sourceSets.main {
 val androidJar = rootProject.extra["androidJar"] as File
 dependencies {
     compileOnly(project(":contracts"))
-    compileOnly(files(androidJar))
+    // media3 AARs are resolved and extracted by the root build script.
+    // okhttp and NewPipeExtractor are plain JARs (implementation = bundled into plugin jar).
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.github.TeamNewPipe:NewPipeExtractor:v0.24.2")
-    implementation("androidx.media3:media3-common:1.3.1")
-    implementation("androidx.media3:media3-exoplayer:1.3.1")
 }
 
 // The legacy loader receives one DEX and does not resolve Maven dependencies.
