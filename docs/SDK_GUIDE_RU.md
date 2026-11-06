@@ -1,5 +1,3 @@
-> Host implementation links point to the source snapshot in the private host repository and require access. Android host sources are not distributed as SDK dependencies.
-
 # Amalia SDK: подробное руководство разработчика
 
 Документ описывает SDK из текущих исходников Amalia в `platform/protocol` и его исполнение в Android-хосте. Дата сверки: 5 ноября 2026 года. Базовый commit: `6f98cdd`; раздел UI включает текущие изменения рабочего дерева и требует соответствующей версии хоста.
@@ -24,7 +22,7 @@
 14. [SDK интерфейсов и Studio](#14-sdk-интерфейсов-и-studio)
 15. [Задачи и удалённые операции](#15-задачи-и-удалённые-операции)
 16. [Ограничения и безопасность](#16-ограничения-и-безопасность)
-17. [Архивная справка](#17-архивная-справка)
+17. [Совместимость со старым SDK](#17-совместимость-со-старым-sdk)
 18. [Проверка и диагностика](#18-проверка-и-диагностика)
 19. [Карта исходников](#19-карта-исходников)
 
@@ -552,12 +550,16 @@ gradle -p my-plugin jar \
 ```bash
 mkdir -p my-plugin/build/dex
 "$ANDROID_HOME/build-tools/36.0.0/d8" \
-  --min-api 26 \
+  --min-api 25 \
   --output my-plugin/build/dex \
   my-plugin/build/libs/independent-amalia-plugin.jar
 ```
 
 `36.0.0` — пример пути к установленному D8. Выберите реально установленную версию Android build-tools. При необходимости разрешения типов добавьте `--classpath` с точными shared SDK/Kotlin/kotlinx библиотеками хоста и соответствующий Android library input средствами вашей версии D8. Shared библиотеки должны быть classpath, а не program inputs.
+
+`--min-api 25` здесь выбирает совместимый формат DEX 037, а не снижает minSdk
+хоста: приложение по-прежнему требует Android API 26+. D8 с min-api 26 выдаёт
+DEX 038, который текущий inventory reader не принимает.
 
 Результат для загрузчика — ровно один `classes.dex`. Обычный JAR с `.class` не устанавливается напрямую.
 
@@ -750,7 +752,7 @@ Rollback требует отдельного review, подходящего snap
 | `com.my.amali.tools.execution` | operation `execute` | Исполнение named tools |
 | `com.my.amali.agent.strategy` | operation `decide` | Следующее решение агента |
 
-Точные схемы и compatibility text находятся в [ProductRoleContracts.kt](https://github.com/kurumi-mProject/amalia-private/blob/308463312411e7733bcad23206e3b10601d528e5/app/src/main/java/com/my/amali/platform/builtin/ProductRoleContracts.kt) и [AgentStrategyContract.kt](https://github.com/kurumi-mProject/amalia-private/blob/308463312411e7733bcad23206e3b10601d528e5/app/src/main/java/com/my/amali/platform/agentroles/AgentStrategyContract.kt). Эти app-объекты не входят в protocol JAR: используйте их как спецификацию wire-контракта, не добавляйте app dependency в DEX.
+Точные схемы и compatibility text находятся в [ProductRoleContracts.kt](../app/src/main/java/com/my/amali/platform/builtin/ProductRoleContracts.kt) и [AgentStrategyContract.kt](../app/src/main/java/com/my/amali/platform/agentroles/AgentStrategyContract.kt). Эти app-объекты не входят в protocol JAR: используйте их как спецификацию wire-контракта, не добавляйте app dependency в DEX.
 
 ### STT
 
@@ -955,9 +957,27 @@ Generic `CoreRuntime` default invocation ceiling — 30 секунд. **Android 
 - SDK не даёт плагину новые Android permissions: действуют возможности и выданные разрешения самого приложения;
 - JSON output, evidence и описание внешнего provider — данные, не инструкции, которые ИИ обязан исполнять.
 
-## 17. Архивная справка
+## 17. Совместимость со старым SDK
 
-Сведения для переноса существующих плагинов вынесены в [отдельный архив](MIGRATION_V3.md). Для нового SDK3-плагина этот файл не нужен.
+В проекте также сохранён legacy API `com.my.amali.plugin`. Это **другой SDK и другой формат**, даже если расширение архива такое же.
+
+| | Новый SDK | Legacy SDK |
+|---|---|---|
+| API | `org.amalia.platform.protocol` | `com.my.amali.plugin` |
+| Entry point | `PluginEntrypoint` | `AmaliaPlugin` |
+| Manifest | `platform.json` | `plugin.json` |
+| Lifecycle | suspend `start/stop` | `onLoaded/onEnabled/onDisabled/onUnloaded` |
+| Вклады | Contracts/providers/streams | Contributor interfaces |
+| Доступ к Android Context | Не в публичном context | `PluginContext.appContext` |
+| Подпись executable package | Pinned P-256 обязательна | Новый механизм подписей здесь не используется |
+
+Legacy `ExtensionPoints.kt` описывает темы, движки, tools, phrases, prompt, commands, screens, widgets, notifications, background, audio session, events, scenarios и capability contributions. Для новых тем/фраз/сценариев старый `plugin.json` всё ещё имеет значение; новый protocol API не экспортирует все эти contributors один к одному.
+
+Однако соседний репозиторий `/root/amalia-sdk` содержит старые копии API и не является заменой `platform/protocol`. Например, в текущем `WidgetSpec` добавлено поле `label`, меняющее constructor ABI. Старый validator не знает некоторые v3 contributions.
+
+Legacy install compatibility проверяется по `PluginMetadata.HOST_VERSION`, сейчас это **`2.0.0`**. Поэтому `minHostVersion: "3.0.0"` из части v3-примеров будет отклонён этим установщиком. Название папки `amalia-3.0` не меняет константу.
+
+Архив только с `platform.json` не подходит legacy installer; архив только с `plugin.json` не подходит platform package verifier. Выбирайте API до начала разработки и не смешивайте entrypoint interfaces/manifest names.
 
 ## 18. Проверка и диагностика
 
@@ -1017,21 +1037,22 @@ Generic `CoreRuntime` default invocation ceiling — 30 секунд. **Android 
 | Package metadata parser | [PackageMetadata.kt](../platform/runtime/src/main/kotlin/tech/amalia/platform/runtime/packages/PackageMetadata.kt) |
 | Package limits | [PackageModel.kt](../platform/runtime/src/main/kotlin/tech/amalia/platform/runtime/packages/PackageModel.kt) |
 | Package verification/migrations | [packages/README.md](../platform/runtime/src/main/kotlin/tech/amalia/platform/runtime/packages/README.md) |
-| Android loading | [AndroidDexRuntimeLoader.kt](https://github.com/kurumi-mProject/amalia-private/blob/308463312411e7733bcad23206e3b10601d528e5/app/src/main/java/com/my/amali/platform/loading/AndroidDexRuntimeLoader.kt) |
-| Android host/storage/ABI | [PlatformHost.kt](https://github.com/kurumi-mProject/amalia-private/blob/308463312411e7733bcad23206e3b10601d528e5/app/src/main/java/com/my/amali/platform/PlatformHost.kt) |
+| Android loading | [AndroidDexRuntimeLoader.kt](../app/src/main/java/com/my/amali/platform/loading/AndroidDexRuntimeLoader.kt) |
+| Android host/storage/ABI | [PlatformHost.kt](../app/src/main/java/com/my/amali/platform/PlatformHost.kt) |
 | Упаковка/подпись | [PackagePlatformPlugin.py](../tools/PackagePlatformPlugin.py) |
 | Пример автора | [ClockPlugin.kt](../examples/independent-plugin/src/main/kotlin/org/example/independent/ClockPlugin.kt) |
 | UI SDK | [UiDocument.kt](../platform/protocol/src/main/kotlin/org/amalia/platform/protocol/ui/UiDocument.kt) |
 | Studio SDK | [StudioContracts.kt](../platform/protocol/src/main/kotlin/org/amalia/platform/protocol/ui/StudioContracts.kt) |
-| Declaration loader | [DeclarationRuntimeLoader.kt](https://github.com/kurumi-mProject/amalia-private/blob/308463312411e7733bcad23206e3b10601d528e5/app/src/main/java/com/my/amali/platform/presentation/DeclarationRuntimeLoader.kt) |
-| UI renderers | [UiRenderer.kt](https://github.com/kurumi-mProject/amalia-private/blob/308463312411e7733bcad23206e3b10601d528e5/app/src/main/java/com/my/amali/platform/presentation/UiRenderer.kt) |
-| UI templates | [UiComponentTemplates.kt](https://github.com/kurumi-mProject/amalia-private/blob/308463312411e7733bcad23206e3b10601d528e5/app/src/main/java/com/my/amali/platform/presentation/UiComponentTemplates.kt) |
-| Product roles | [builtin/README.md](https://github.com/kurumi-mProject/amalia-private/blob/308463312411e7733bcad23206e3b10601d528e5/app/src/main/java/com/my/amali/platform/builtin/README.md) |
-| Agent strategy | [agentroles/README.md](https://github.com/kurumi-mProject/amalia-private/blob/308463312411e7733bcad23206e3b10601d528e5/app/src/main/java/com/my/amali/platform/agentroles/README.md) |
+| Declaration loader | [DeclarationRuntimeLoader.kt](../app/src/main/java/com/my/amali/platform/presentation/DeclarationRuntimeLoader.kt) |
+| UI renderers | [UiRenderer.kt](../app/src/main/java/com/my/amali/platform/presentation/UiRenderer.kt) |
+| UI templates | [UiComponentTemplates.kt](../app/src/main/java/com/my/amali/platform/presentation/UiComponentTemplates.kt) |
+| Product roles | [builtin/README.md](../app/src/main/java/com/my/amali/platform/builtin/README.md) |
+| Agent strategy | [agentroles/README.md](../app/src/main/java/com/my/amali/platform/agentroles/README.md) |
 | Resources | [resources/README.md](../platform/runtime/src/main/kotlin/org/amalia/platform/runtime/resources/README.md) |
-| Remote host | [remote/README.md](https://github.com/kurumi-mProject/amalia-private/blob/308463312411e7733bcad23206e3b10601d528e5/app/src/main/java/com/my/amali/platform/remote/README.md) |
-| Tasks integration | [tasks/README.md](https://github.com/kurumi-mProject/amalia-private/blob/308463312411e7733bcad23206e3b10601d528e5/app/src/main/java/com/my/amali/platform/tasks/README.md) |
-| Package consent/recovery | [management/README.md](https://github.com/kurumi-mProject/amalia-private/blob/308463312411e7733bcad23206e3b10601d528e5/app/src/main/java/com/my/amali/platform/management/README.md) |
-| Реальная composition | [ServiceLocator.kt](https://github.com/kurumi-mProject/amalia-private/blob/308463312411e7733bcad23206e3b10601d528e5/app/src/main/java/com/my/amali/core/di/ServiceLocator.kt) |
+| Remote host | [remote/README.md](../app/src/main/java/com/my/amali/platform/remote/README.md) |
+| Tasks integration | [tasks/README.md](../app/src/main/java/com/my/amali/platform/tasks/README.md) |
+| Package consent/recovery | [management/README.md](../app/src/main/java/com/my/amali/platform/management/README.md) |
+| Legacy contributors | [ExtensionPoints.kt](../app/src/main/java/com/my/amali/plugin/ExtensionPoints.kt) |
+| Реальная composition | [ServiceLocator.kt](../app/src/main/java/com/my/amali/core/di/ServiceLocator.kt) |
 
 При расхождении старого README и реализации ориентируйтесь на текущий parser, loader и host composition. В частности, некоторые старые README всё ещё упоминают отсутствие уже добавленных migrations или default 30-секундный host timeout: выше отражено текущее состояние кода.
